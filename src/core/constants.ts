@@ -13,4 +13,5 @@ export const DATA_ATTRIBUTE = 'data-preview-style'
 export const TRIGGER_Z_INDEX = 40
 export const DRAWER_Z_INDEX = 60
 export const BACKDROP_Z_INDEX = 60
-export const TRANSITION_MS = 200
+export const TRANSITION_MS = 200      // structural open/close animation
+export const TOKEN_TRANSITION_MS = 180 // color / theme-token changes

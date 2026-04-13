@@ -3,7 +3,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 import type { StylePreset, PreviewUITheme } from '../types/index.js'
 import { DEFAULT_UI_THEME } from '../types/index.js'
-import { DRAWER_Z_INDEX, BACKDROP_Z_INDEX, TRANSITION_MS } from '../core/constants.js'
+import { DRAWER_Z_INDEX, BACKDROP_Z_INDEX, TRANSITION_MS, TOKEN_TRANSITION_MS } from '../core/constants.js'
 import { PresetCard } from './PresetCard.js'
 import { WestlineLogo } from './WestlineLogo.js'
 
@@ -139,7 +139,7 @@ export function PreviewDrawer({
           backgroundColor: backdropTint,
           backdropFilter: 'blur(2px)',
           WebkitBackdropFilter: 'blur(2px)',
-          transition: 'background-color 180ms ease',
+          transition: `background-color ${TOKEN_TRANSITION_MS}ms ease`,
           zIndex: BACKDROP_Z_INDEX,
         }}
       />
@@ -157,7 +157,7 @@ export function PreviewDrawer({
           backgroundColor: theme.bg,
           border: `1px solid ${theme.border}`,
           boxShadow: shadow,
-          transition: 'background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease',
+          transition: `background-color ${TOKEN_TRANSITION_MS}ms ease, border-color ${TOKEN_TRANSITION_MS}ms ease, box-shadow ${TOKEN_TRANSITION_MS}ms ease`,
           display: 'flex',
           flexDirection: 'column',
           fontFamily: theme.fontBody,
@@ -189,7 +189,7 @@ export function PreviewDrawer({
             justifyContent: 'space-between',
             padding: '16px',
             borderBottom: `1px solid ${theme.border}`,
-            transition: 'border-color 180ms ease',
+            transition: `border-color ${TOKEN_TRANSITION_MS}ms ease`,
             flexShrink: 0,
           }}
         >
@@ -208,7 +208,7 @@ export function PreviewDrawer({
                 fontSize: '11px',
                 fontWeight: 500,
                 color: theme.textMuted,
-                transition: 'color 180ms ease',
+                transition: `color ${TOKEN_TRANSITION_MS}ms ease`,
                 fontFamily: theme.fontBody,
                 textTransform: 'uppercase',
                 letterSpacing: '0.06em',
@@ -234,7 +234,7 @@ export function PreviewDrawer({
               border: 'none',
               backgroundColor: 'transparent',
               color: theme.textMuted,
-              transition: 'color 180ms ease',
+              transition: `color ${TOKEN_TRANSITION_MS}ms ease`,
             }}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ display: 'block' }}>
@@ -270,7 +270,7 @@ export function PreviewDrawer({
           style={{
             padding: '12px 16px',
             borderTop: `1px solid ${theme.border}`,
-            transition: 'border-color 180ms ease',
+            transition: `border-color ${TOKEN_TRANSITION_MS}ms ease`,
             display: 'flex',
             gap: '8px',
             flexShrink: 0,
@@ -294,7 +294,7 @@ export function PreviewDrawer({
               cursor: 'pointer',
               textAlign: 'center',
               fontFamily: theme.fontBody,
-              transition: 'background-color 180ms ease, border-color 180ms ease, color 180ms ease',
+              transition: `background-color ${TOKEN_TRANSITION_MS}ms ease, border-color ${TOKEN_TRANSITION_MS}ms ease, color ${TOKEN_TRANSITION_MS}ms ease`,
             }}
           >
             Reset
@@ -317,7 +317,7 @@ export function PreviewDrawer({
               cursor: 'pointer',
               textAlign: 'center',
               fontFamily: theme.fontBody,
-              transition: 'background-color 180ms ease, color 180ms ease',
+              transition: `background-color ${TOKEN_TRANSITION_MS}ms ease, color ${TOKEN_TRANSITION_MS}ms ease`,
             }}
           >
             Copy Link

@@ -1,5 +1,7 @@
 'use client'
 
+import { TOKEN_TRANSITION_MS } from '../core/constants.js'
+
 interface WestlineLogoProps {
   isDark?: boolean
   height?: number | string
@@ -24,7 +26,7 @@ export function WestlineLogo({ isDark = true, height = 22 }: WestlineLogoProps) 
         height: typeof height === 'number' ? `${height}px` : height,
         width: 'auto',
         fill,
-        transition: 'fill 180ms ease',
+        transition: `fill ${TOKEN_TRANSITION_MS}ms ease`,
       }}
     >
       <path d="M5.733.705v21.763l9.389-9.002,9.336,9.04V.673h5.733v33.869c0,1.115-1.408,1.671-2.227.88l-12.846-14.146-12.893,14.151C1.405,36.216,0,35.659,0,34.546V.705h5.733Z" />
