@@ -90,5 +90,5 @@ export const exampleConfig: PreviewConfig = {
   presets: storefrontPresets,
   allowedTokens: STOREFRONT_TOKENS,
   instanceId: 'storefront-preview', // stable identifier per site
-  drawerTheme: 'studio', // 'studio' (default) | 'techie' | 'rustic'
+  drawerTheme: 'auto', // default; use 'studio' | 'techie' | 'rustic' to lock the drawer
 }

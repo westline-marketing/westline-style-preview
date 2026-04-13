@@ -2,6 +2,8 @@ import type { DrawerThemeName, PreviewUITheme, PreviewConfig } from '../types/in
 import { DEFAULT_UI_THEME } from '../types/index.js'
 import { parseHex } from './color-utils.js'
 
+type BuiltInDrawerThemeName = Exclude<DrawerThemeName, 'auto'>
+
 /**
  * Built-in drawer chrome themes.
  *
@@ -9,7 +11,7 @@ import { parseHex } from './color-utils.js'
  * studio  — light, Westline green accent, soft radius, clean sans-serif
  * rustic  — warm dark, copper accent, sturdy industrial fonts
  */
-export const DRAWER_THEMES: Record<DrawerThemeName, PreviewUITheme> = {
+export const DRAWER_THEMES: Record<BuiltInDrawerThemeName, PreviewUITheme> = {
   techie: {
     bg: '#0D1117',
     bgAlt: '#161B22',
@@ -63,7 +65,7 @@ export function isThemeDark(hexBg: string): boolean {
 /**
  * Resolve the drawer theme from a PreviewConfig.
  *
- * Priority: explicit uiTheme > named drawerTheme > 'studio' default.
+ * Priority: explicit uiTheme > named drawerTheme > auto/omitted studio base.
  * Always returns isDark (computed from bg if not set).
  */
 export function resolveDrawerTheme(
@@ -75,7 +77,10 @@ export function resolveDrawerTheme(
       isDark: config.uiTheme.isDark ?? isThemeDark(config.uiTheme.bg),
     }
   }
-  const themeName = config.drawerTheme ?? 'studio'
+  const themeName: BuiltInDrawerThemeName =
+    config.drawerTheme && config.drawerTheme !== 'auto'
+      ? config.drawerTheme
+      : 'studio'
   const theme = DRAWER_THEMES[themeName]
   return { ...theme, isDark: theme.isDark ?? isThemeDark(theme.bg) }
 }

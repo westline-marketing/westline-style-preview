@@ -50,11 +50,15 @@ export function StylePreview({ config, enabled }: StylePreviewProps) {
   }, [])
 
   const baseTheme = useMemo(() => resolveDrawerTheme(themeConfig), [themeConfig])
+  const isThemeLocked = Boolean(
+    themeConfig.uiTheme || (themeConfig.drawerTheme && themeConfig.drawerTheme !== 'auto')
+  )
   const theme = useMemo(() => {
+    if (isThemeLocked) return baseTheme
     const activePreset = config.presets.find((p) => p.id === activePresetId)
     if (!activePreset || activePresetId === config.defaultStyleId) return baseTheme
     return deriveDrawerTheme(activePreset.swatches, baseTheme) ?? baseTheme
-  }, [activePresetId, config.presets, config.defaultStyleId, baseTheme])
+  }, [activePresetId, config.presets, config.defaultStyleId, baseTheme, isThemeLocked])
 
   if (!isEnabled) return null
   if (!mounted || !targetFound) return null

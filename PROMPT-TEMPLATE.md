@@ -35,7 +35,7 @@ Instructions:
    - targetSelector matching the wrapper class
    - presets + allowedTokens
    - instanceId (a stable identifier for this site — do NOT also set storageKey)
-   - drawerTheme: 'studio' (default), 'techie', or 'rustic'
+   - drawerTheme: 'auto' (default) for swatch-derived drawer chrome, or 'studio' | 'techie' | 'rustic' to lock the drawer
    - Dev-mode validatePreset check
 
 7. Mount in the layout:
@@ -82,7 +82,7 @@ Instructions:
    - [NAME]: [DESCRIPTION]
 
 5. Create src/preview-styles/config.ts (use instanceId, not storageKey,
-   for new sites; set drawerTheme to 'studio', 'techie', or 'rustic'),
+   for new sites; set drawerTheme to 'auto' or omit it for swatch-derived behavior, or use 'studio' | 'techie' | 'rustic' to lock the drawer),
    mount PrepaintScript + StylePreview in the layout,
    add NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true to .env.local.
 
