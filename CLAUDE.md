@@ -31,7 +31,7 @@ When asked to add style preview to a project, do the following:
 - Create `src/preview-styles/config.ts` wiring presets to the theme wrapper class
 - Include `allowedTokens` from the token allowlist
 - Use `instanceId` (not `storageKey`) for new sites
-- Set `drawerTheme` to `'auto'` for the default swatch-derived drawer, or to `'studio'`, `'techie'`, or `'rustic'` to lock the drawer statically
+- Set `drawerTheme` to `'auto'` (or omit it -- `'auto'` is the default). This is the correct choice for almost all integrations -- the drawer will recolor its chrome to match the active preset's swatches. Only use `'studio'`, `'techie'`, or `'rustic'` if you intentionally want the drawer locked to a single appearance regardless of which preset the user selects. Do not choose a named theme to "match the site's vibe" -- `auto` handles that through swatch derivation.
 - Use `uiTheme` only when you want to override the drawer chrome entirely; it takes precedence over auto and built-in themes
 - Add dev-mode `validatePreset()` check at module load time
 

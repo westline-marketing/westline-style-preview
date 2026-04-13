@@ -96,7 +96,7 @@ export const previewConfig: PreviewConfig = {
   presets: storefrontPresets,
   allowedTokens: STOREFRONT_TOKENS,
   instanceId: 'storefront-preview',
-  drawerTheme: 'auto',  // default; use 'studio' | 'techie' | 'rustic' to lock the drawer
+  drawerTheme: 'auto',  // almost always the right choice; recolors drawer to match active preset
 }
 
 if (process.env.NODE_ENV !== 'production') {
@@ -245,19 +245,21 @@ This works in both the React runtime and the prepaint inline script, so the upgr
 
 The package ships with three built-in drawer themes plus an auto mode:
 
-| Theme | Look | Best for |
-|---|---|---|
-| `auto` | Derives drawer chrome from the active preset swatches (non-default presets only) | Default behavior |
-| `studio` | Light, Westline green accent, soft radius | Client presentations |
-| `techie` | Dark, electric blue accent, sharp corners | Developer/internal review |
-| `rustic` | Warm dark, copper accent, industrial fonts | Trades/equipment clients |
+| Theme | Look | Follows presets? | Best for |
+|---|---|---|---|
+| `auto` | Derives drawer chrome from active preset swatches | **Yes** | **Default -- use this** |
+| `studio` | Light, Westline green accent, soft radius | No (locked) | Fixed light drawer |
+| `techie` | Dark, electric blue accent, sharp corners | No (locked) | Fixed dark drawer |
+| `rustic` | Warm dark, copper accent, industrial fonts | No (locked) | Fixed warm drawer |
+
+Always use `auto` unless you explicitly need a permanently fixed drawer appearance. The `auto` mode recolors the drawer chrome every time the user switches presets, which is the correct behavior for client presentations where the drawer should feel like part of the selected design direction. Named themes (`studio`, `techie`, `rustic`) lock the drawer to one static look regardless of which preset is active -- only use them when that is intentional.
 
 Set `drawerTheme` in your config:
 
 ```ts
 export const previewConfig: PreviewConfig = {
   // ...
-  drawerTheme: 'auto',  // default when omitted; use studio/techie/rustic to lock the drawer
+  drawerTheme: 'auto',  // default when omitted; almost always the right choice
 }
 ```
 

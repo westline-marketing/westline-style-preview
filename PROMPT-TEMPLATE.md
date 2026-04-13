@@ -38,10 +38,13 @@ Instructions:
    - targetSelector matching the wrapper class
    - presets + allowedTokens
    - instanceId (a stable identifier for this site — do NOT also set storageKey)
-   - drawerTheme: 'auto' (default) derives drawer chrome from the active
-     preset's swatches; the default preset (empty variables) uses the
-     Studio base theme. Set 'studio' | 'techie' | 'rustic' to lock the
-     drawer to a static built-in theme instead.
+   - Always set drawerTheme: 'auto' unless the user explicitly requests a
+     fixed drawer. Do not choose a named theme based on site aesthetics --
+     'auto' derives the drawer's appearance from the active preset's swatches,
+     which is the correct behavior for client presentations. The default preset
+     (empty variables) falls back to the Studio base theme. Only use
+     'studio' | 'techie' | 'rustic' if you intentionally want the drawer locked
+     to a single appearance regardless of which preset is selected.
    - Dev-mode validatePreset check
 
 7. Mount in the layout:
@@ -91,10 +94,12 @@ Instructions:
    - [NAME]: [DESCRIPTION]
 
 5. Create src/preview-styles/config.ts (use instanceId, not storageKey,
-   for new sites; set drawerTheme to 'auto' or omit it — 'auto' derives
-   drawer chrome from the active preset's swatches, falling back to the
-   Studio base for the default preset. Use 'studio' | 'techie' | 'rustic'
-   to lock the drawer to a static built-in theme).
+   for new sites). Always set drawerTheme: 'auto' unless the user explicitly
+   requests a fixed drawer. Do not choose a named theme based on site
+   aesthetics — 'auto' derives the drawer's appearance from the active
+   preset's swatches, which is the correct behavior for client presentations.
+   Only use 'studio' | 'techie' | 'rustic' if you intentionally want the
+   drawer locked to a single appearance regardless of which preset is selected.
    Mount PrepaintScript + StylePreview in the layout,
    add NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true to .env.local.
    Note: the edge trigger is draggable, keyboard-accessible, and
