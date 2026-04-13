@@ -62,7 +62,7 @@ When asked to add style preview to a project, do the following:
 - See `GUIDE.md` in this repo for the complete integration guide with code templates
 - See `README.md` for the package API reference
 - Three built-in drawer themes: `studio` (light), `techie` (dark), `rustic` (warm dark)
-- Default drawer behavior is `auto`, which derives the drawer chrome from the active preset swatches when available
+- Default drawer behavior is `auto`, which starts from the Studio base theme and lets `StylePreview` derive drawer chrome from non-default preset swatches when available
 - Auto-derive caveat: the default preset uses the base theme as-is (no swatch derivation); non-default presets derive drawer chrome from their swatches
 - Trigger is draggable along the viewport edge; position persists in localStorage keyed by `instanceId`
 - Active preset is indicated by an accent bar on its card

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseHex, lerpHex } from './color-utils.js'
+import { parseHex, lerpHex, contrastRatio } from './color-utils.js'
 import { deriveDrawerTheme } from './derive.js'
 import type { PreviewUITheme } from '../types/index.js'
 
@@ -81,13 +81,19 @@ describe('deriveDrawerTheme', () => {
     expect(result!.bgAlt).not.toBe(result!.bg) // shifted, not identical
   })
 
-  it('computes bgAlt as a subtle shift from bg toward text', () => {
+  it('computes bgAlt as a subtle shift from bg toward the surface hint', () => {
     const swatches = ['#000000', '#ffffff', '#F0F0F0', '#E8930C', '#2E3440']
     const result = deriveDrawerTheme(swatches, BASE_THEME)
     // 6% lerp from #000000 toward #F0F0F0 — should be a very dark gray, not #808080
     expect(result!.bgAlt).not.toBe('#808080')
     // bgAlt should stay close to bg (dark), not jump to medium gray
-    expect(result!.bgAlt).toBe(lerpHex('#000000', '#F0F0F0', 0.06))
+    expect(result!.bgAlt).toBe(lerpHex('#000000', '#ffffff', 0.06))
+  })
+
+  it('uses the border swatch as the source hint for the border tier', () => {
+    const swatches = ['#000000', '#ffffff', '#F0F0F0', '#E8930C', '#336699']
+    const result = deriveDrawerTheme(swatches, BASE_THEME)
+    expect(result!.border).toBe(lerpHex('#000000', '#336699', 0.18))
   })
 
   it('computes textMuted as text blended toward bg', () => {
@@ -162,8 +168,19 @@ describe('deriveDrawerTheme', () => {
       const result = deriveDrawerTheme(swatches, BASE_THEME)
 
       expect(result!.text).toBe('#F5F7FA')
-      // textMuted = lerpHex('#F5F7FA', '#1B2838', 0.45) — should be a mid-tone, readable on dark bg
-      expect(result!.textMuted).not.toBe(result!.bg)
+      expect(contrastRatio(result!.textMuted, result!.bg)).toBeGreaterThanOrEqual(4.5)
+      expect(contrastRatio(result!.textMuted, result!.bgAlt)).toBeGreaterThanOrEqual(4.5)
+      expect(contrastRatio(result!.textMuted, result!.surface)).toBeGreaterThanOrEqual(4.5)
+    })
+
+    it('keeps textMuted readable on light auto-derived themes too', () => {
+      const swatches = ['#FAFAF9', '#E8E7E5', '#1C1917', '#5B8A72', '#D4D3D0']
+      const result = deriveDrawerTheme(swatches, BASE_THEME)
+
+      expect(result!.isDark).toBe(false)
+      expect(contrastRatio(result!.textMuted, result!.bg)).toBeGreaterThanOrEqual(4.5)
+      expect(contrastRatio(result!.textMuted, result!.bgAlt)).toBeGreaterThanOrEqual(4.5)
+      expect(contrastRatio(result!.textMuted, result!.surface)).toBeGreaterThanOrEqual(4.5)
     })
 
     it('falls back to safe default when neither text nor surface contrast with bg', () => {
@@ -206,7 +223,9 @@ describe('deriveDrawerTheme', () => {
         // middle grays from raw swatch values
         expect(result!.bgAlt).toBe(lerpHex(swatches[0], swatches[1], 0.06))
         expect(result!.surface).toBe(lerpHex(swatches[0], swatches[1], 0.12))
-        expect(result!.border).toBe(lerpHex(swatches[0], swatches[1], 0.18))
+        expect(result!.border).toBe(lerpHex(swatches[0], swatches[4], 0.18))
+        expect(contrastRatio(result!.textMuted, result!.bg)).toBeGreaterThanOrEqual(4.5)
+        expect(contrastRatio(result!.textMuted, result!.bgAlt)).toBeGreaterThanOrEqual(4.5)
       }
     })
   })

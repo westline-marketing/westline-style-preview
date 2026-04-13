@@ -195,6 +195,7 @@ describe('auto-derive: non-default preset derives from swatches', () => {
     expect(derived).toBe(true)
     expect(theme.isDark).toBe(false)
     expect(theme.bg).toBe(LIGHT_SWATCHES[0])
+    expect(theme.textMuted).toBeDefined()
   })
 
   it('derives from dark swatches with correct isDark flag', () => {

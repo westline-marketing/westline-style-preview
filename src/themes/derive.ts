@@ -2,6 +2,24 @@ import type { PreviewUITheme } from '../types/index.js'
 import { isThemeDark } from './index.js'
 import { lerpHex, contrastRatio } from './color-utils.js'
 
+function deriveMutedText(
+  text: string,
+  bg: string,
+  backgrounds: string[],
+  preferredBlend: number,
+  minContrast: number
+): string {
+  for (let step = Math.round(preferredBlend * 100); step >= 0; step -= 1) {
+    const t = step / 100
+    const candidate = lerpHex(text, bg, t)
+    if (backgrounds.every((background) => contrastRatio(candidate, background) >= minContrast)) {
+      return candidate
+    }
+  }
+
+  return text
+}
+
 /**
  * Derive a full drawer theme from a preset's swatches array.
  *
@@ -13,6 +31,10 @@ import { lerpHex, contrastRatio } from './color-utils.js'
  * contrast against the swatch `bg` (common when site text is designed
  * for a different surface), the function swaps to the `surface` color
  * or a safe fallback so drawer content remains readable.
+ *
+ * The drawer does not use authored `surface` / `border` swatches raw.
+ * Instead it derives subtle drawer tiers from those hints so site-level
+ * light surfaces do not wash out the preview UI.
  */
 export function deriveDrawerTheme(
   swatches: string[] | undefined,
@@ -35,17 +57,21 @@ export function deriveDrawerTheme(
       : isDark ? '#E6EDF3' : '#1C1917'
   }
 
-  // Derive all background-tier colors as subtle shifts from bg toward
-  // drawerText. This keeps bgAlt/surface/border in the same lightness
-  // family as bg, preventing washed-out card backgrounds when the raw
-  // swatch surface/border are from the opposite lightness range.
+  // Derive all background-tier colors as subtle shifts from bg toward the
+  // authored surface/border hints. This keeps drawer chrome in the same
+  // lightness family as bg without flattening every site to the text color.
+  const bgAlt = lerpHex(bg, surface, 0.06)
+  const drawerSurface = lerpHex(bg, surface, 0.12)
+  const drawerBorder = lerpHex(bg, border, 0.18)
+  const textMuted = deriveMutedText(drawerText, bg, [bg, bgAlt, drawerSurface], 0.45, MIN_CONTRAST)
+
   return {
     bg,
-    bgAlt: lerpHex(bg, drawerText, 0.06),
-    surface: lerpHex(bg, drawerText, 0.12),
-    border: lerpHex(bg, drawerText, 0.18),
+    bgAlt,
+    surface: drawerSurface,
+    border: drawerBorder,
     text: drawerText,
-    textMuted: lerpHex(drawerText, bg, 0.45),
+    textMuted,
     accent,
     fontBody: base.fontBody,
     fontHeading: base.fontHeading,

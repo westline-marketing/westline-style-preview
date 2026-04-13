@@ -1,7 +1,5 @@
 'use client'
 
-import { TOKEN_TRANSITION_MS } from '../core/constants.js'
-
 interface WestlineLogoProps {
   isDark?: boolean
   height?: number | string
@@ -30,7 +28,6 @@ export function WestlineLogo({ isDark = true, height = 22 }: WestlineLogoProps) 
         display: 'block',
         height: typeof height === 'number' ? `${height}px` : height,
         width: 'auto',
-        transition: `opacity ${TOKEN_TRANSITION_MS}ms ease`,
       }}
     />
   )

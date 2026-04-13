@@ -38,8 +38,10 @@ export interface PreviewConfig {
   targetSelector: string
   presets: StylePreset[]
   allowedTokens?: string[]
-  /** Named drawer theme. Defaults to 'auto' (derives from active preset swatches).
-   *  Set to 'studio', 'techie', or 'rustic' to lock the drawer to a static theme. */
+  /** Named drawer theme. When omitted or set to 'auto', StylePreview starts from
+   *  the Studio base theme and may derive drawer chrome from a non-default preset's
+   *  swatches at runtime. Set to 'studio', 'techie', or 'rustic' to lock the
+   *  drawer to a static theme. */
   drawerTheme?: DrawerThemeName
   /** Explicit UI theme override. Takes precedence over drawerTheme. */
   uiTheme?: PreviewUITheme

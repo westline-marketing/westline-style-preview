@@ -301,7 +301,8 @@ In development, append `?previewDrawer=techie` (or `studio` / `rustic`) to any p
 
 ## How It Works
 
-- `resolveDrawerTheme()` resolves the drawer chrome: explicit `uiTheme` > explicit built-in `drawerTheme` > auto-derived swatch theme > `'studio'` fallback
+- `resolveDrawerTheme()` resolves the base drawer chrome: explicit `uiTheme` > explicit built-in `drawerTheme` > `'studio'` fallback
+- `StylePreview` applies swatch derivation in auto mode for non-default presets, using the authored swatches as hints for a coherent drawer palette
 - URL param wins over browser storage, which wins over the default preset
 - `PrepaintScript` injects a minimal style block before first paint
 - `StylePreview` portals the drawer into `document.body`
