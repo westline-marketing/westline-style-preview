@@ -11,9 +11,11 @@ interface PresetCardProps {
   isActive: boolean
   onClick: () => void
   theme?: PreviewUITheme
+  /** When true, disables all CSS transitions for reduced-motion preference. */
+  reducedMotion?: boolean
 }
 
-export function PresetCard({ preset, isActive, onClick, theme = DEFAULT_UI_THEME }: PresetCardProps) {
+export function PresetCard({ preset, isActive, onClick, theme = DEFAULT_UI_THEME, reducedMotion = false }: PresetCardProps) {
   const swatches = preset.swatches ?? []
   const inactiveBorder = `${theme.border}88`
 
@@ -42,7 +44,7 @@ export function PresetCard({ preset, isActive, onClick, theme = DEFAULT_UI_THEME
         border: isActive ? `2px solid ${theme.accent}` : `2px solid ${inactiveBorder}`,
         backgroundColor: isActive ? `${theme.accent}14` : theme.bgAlt,
         cursor: 'pointer',
-        transition: `border-color ${TOKEN_TRANSITION_MS}ms ease, background-color ${TOKEN_TRANSITION_MS}ms ease, border-radius ${TOKEN_TRANSITION_MS}ms ease`,
+        transition: reducedMotion ? 'none' : `border-color ${TOKEN_TRANSITION_MS}ms ease, background-color ${TOKEN_TRANSITION_MS}ms ease, border-radius ${TOKEN_TRANSITION_MS}ms ease`,
         boxSizing: 'border-box',
         fontFamily: theme.fontBody,
         position: 'relative',
@@ -77,7 +79,7 @@ export function PresetCard({ preset, isActive, onClick, theme = DEFAULT_UI_THEME
           width: isActive ? '3px' : '0px',
           backgroundColor: theme.accent,
           borderRadius: '0 2px 2px 0',
-          transition: `width ${TOKEN_TRANSITION_MS}ms ease, background-color ${TOKEN_TRANSITION_MS}ms ease`,
+          transition: reducedMotion ? 'none' : `width ${TOKEN_TRANSITION_MS}ms ease, background-color ${TOKEN_TRANSITION_MS}ms ease`,
         }}
       />
 

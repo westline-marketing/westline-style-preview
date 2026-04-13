@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { findPreset, validatePreset } from './validate.js'
 import type { StylePreset } from '../types/index.js'
 
@@ -116,6 +116,83 @@ describe('validate', () => {
         variables: null,
       } as unknown as StylePreset
       expect(validatePreset(preset)).toBe(false)
+    })
+  })
+
+  describe('swatches validation', () => {
+    const originalEnv = process.env.NODE_ENV
+
+    afterEach(() => {
+      process.env.NODE_ENV = originalEnv
+      vi.restoreAllMocks()
+    })
+
+    it('passes without warning when preset has 5 swatches', () => {
+      process.env.NODE_ENV = 'development'
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const preset: StylePreset = {
+        id: 'warm',
+        label: 'Warm',
+        variables: { '--bg': '#FFF5E6' },
+        swatches: ['#FFF5E6', '#F5E6D3', '#1C1917', '#D97706', '#E7E5E4'],
+      }
+      expect(validatePreset(preset)).toBe(true)
+      expect(warnSpy).not.toHaveBeenCalled()
+    })
+
+    it('passes but warns when non-default preset has fewer than 5 swatches', () => {
+      process.env.NODE_ENV = 'development'
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const preset: StylePreset = {
+        id: 'partial',
+        label: 'Partial',
+        variables: { '--bg': '#FFF5E6' },
+        swatches: ['#FFF5E6', '#F5E6D3', '#1C1917'],
+      }
+      expect(validatePreset(preset)).toBe(true)
+      expect(warnSpy).toHaveBeenCalledOnce()
+      expect(warnSpy).toHaveBeenCalledWith(
+        '[style-preview] Preset "partial" has 3 swatches (5 required for auto drawer theming)'
+      )
+    })
+
+    it('passes but warns when non-default preset has no swatches', () => {
+      process.env.NODE_ENV = 'development'
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const preset: StylePreset = {
+        id: 'missing',
+        label: 'Missing',
+        variables: { '--bg': '#FFF5E6' },
+      }
+      expect(validatePreset(preset)).toBe(true)
+      expect(warnSpy).toHaveBeenCalledOnce()
+      expect(warnSpy).toHaveBeenCalledWith(
+        '[style-preview] Preset "missing" has 0 swatches (5 required for auto drawer theming)'
+      )
+    })
+
+    it('passes without warning for default preset (empty variables) with no swatches', () => {
+      process.env.NODE_ENV = 'development'
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const preset: StylePreset = {
+        id: 'default',
+        label: 'Default',
+        variables: {},
+      }
+      expect(validatePreset(preset)).toBe(true)
+      expect(warnSpy).not.toHaveBeenCalled()
+    })
+
+    it('does not warn in production even when swatches are missing', () => {
+      process.env.NODE_ENV = 'production'
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const preset: StylePreset = {
+        id: 'prod',
+        label: 'Prod',
+        variables: { '--bg': '#FFF5E6' },
+      }
+      expect(validatePreset(preset)).toBe(true)
+      expect(warnSpy).not.toHaveBeenCalled()
     })
   })
 })

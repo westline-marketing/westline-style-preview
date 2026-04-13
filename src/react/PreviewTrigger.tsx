@@ -86,9 +86,11 @@ interface PreviewTriggerProps {
   drawerOpen: boolean
   /** Namespace for localStorage position key. Uses config.instanceId when threaded through. */
   instanceId?: string
+  /** When provided, overrides the local media-query subscription. */
+  reducedMotion?: boolean
 }
 
-export function PreviewTrigger({ onOpen, onClose, drawerOpen, instanceId }: PreviewTriggerProps) {
+export function PreviewTrigger({ onOpen, onClose, drawerOpen, instanceId, reducedMotion }: PreviewTriggerProps) {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const key = storageKey(instanceId)
 
@@ -103,11 +105,14 @@ export function PreviewTrigger({ onOpen, onClose, drawerOpen, instanceId }: Prev
   const [focused, setFocused] = useState(false)
   const [dragging, setDragging] = useState(false)
 
-  const reduceMotion = useSyncExternalStore(
+  const localReduceMotion = useSyncExternalStore(
     subscribeReduceMotion,
     getReduceMotionSnapshot,
     getReduceMotionServerSnapshot,
   )
+  // Prefer prop from parent (single subscription) when available; fall back to
+  // local subscription for standalone usage.
+  const reduceMotion = reducedMotion ?? localReduceMotion
 
   // Ref holding drag-in-progress data (avoids stale closures).
   const dragStateRef = useRef<{

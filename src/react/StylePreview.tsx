@@ -14,6 +14,19 @@ const emptySubscribe = () => () => {}
 const returnTrue = () => true
 const returnFalse = () => false
 
+// ─── Reduced-motion subscription (useSyncExternalStore) ──────────────
+const subscribeReduceMotion = (cb: () => void): (() => void) => {
+  if (typeof window === 'undefined' || !window.matchMedia) return () => {}
+  const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
+  mql.addEventListener?.('change', cb)
+  return () => mql.removeEventListener?.('change', cb)
+}
+const getReduceMotionSnapshot = (): boolean => {
+  if (typeof window === 'undefined' || !window.matchMedia) return false
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+const getReduceMotionServerSnapshot = (): boolean => false
+
 interface StylePreviewProps {
   config: PreviewConfig
   /**
@@ -28,6 +41,11 @@ interface StylePreviewProps {
 export function StylePreview({ config, enabled }: StylePreviewProps) {
   const isEnabled = enabled ?? process.env.NEXT_PUBLIC_ENABLE_STYLE_PREVIEW === 'true'
   const mounted = useSyncExternalStore(emptySubscribe, returnTrue, returnFalse)
+  const prefersReducedMotion = useSyncExternalStore(
+    subscribeReduceMotion,
+    getReduceMotionSnapshot,
+    getReduceMotionServerSnapshot,
+  )
 
   // Dev-mode: allow ?previewDrawer=techie|studio|rustic to override theme
   const themeConfig = useMemo((): PreviewConfig => {
@@ -73,6 +91,7 @@ export function StylePreview({ config, enabled }: StylePreviewProps) {
         onClose={closeDrawer}
         drawerOpen={isDrawerOpen}
         instanceId={config.instanceId ?? config.storageKey}
+        reducedMotion={prefersReducedMotion}
       />
       <PreviewDrawer
         isOpen={isDrawerOpen}
@@ -83,6 +102,7 @@ export function StylePreview({ config, enabled }: StylePreviewProps) {
         onReset={resetPreset}
         previewUrl={previewUrl}
         theme={theme}
+        reducedMotion={prefersReducedMotion}
       />
     </>,
     document.body
