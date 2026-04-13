@@ -4,6 +4,7 @@ import { useEffect, useRef, useCallback, useState } from 'react'
 import type { StylePreset, PreviewUITheme } from '../types/index.js'
 import { DEFAULT_UI_THEME } from '../types/index.js'
 import { DRAWER_Z_INDEX, BACKDROP_Z_INDEX, TRANSITION_MS, TOKEN_TRANSITION_MS } from '../core/constants.js'
+import { parseHex } from '../themes/color-utils.js'
 import { PresetCard } from './PresetCard.js'
 import { WestlineLogo } from './WestlineLogo.js'
 
@@ -37,8 +38,13 @@ export function PreviewDrawer({
   const backdropTint = isDark ? 'rgba(0,0,0,0.5)' : 'rgba(28,25,23,0.25)'
 
   // Parse theme borderRadius to a number so we can scale it for different
-  // UI surfaces.  Falls back to 6 when the string isn't parseable.
-  const baseRadius = parseInt(theme.borderRadius ?? '6', 10) || 6
+  // UI surfaces.  Falls back to 8 when the string isn't parseable.
+  const baseRadius = parseFloat(theme.borderRadius ?? '8') || 8
+
+  // Determine whether accent needs dark or light foreground for WCAG AA contrast
+  const [ar, ag, ab] = parseHex(theme.accent)
+  const accentIsLight = (0.299 * ar + 0.587 * ag + 0.114 * ab) / 255 >= 0.5
+  const accentFg = accentIsLight ? '#1C1917' : '#FFFFFF'
   const drawerRadius = Math.min(22, Math.max(0, baseRadius * 1.6))
   const buttonRadius = Math.min(14, Math.max(4, baseRadius))
 
@@ -320,7 +326,7 @@ export function PreviewDrawer({
               padding: '4px 12px',
               fontSize: '13px',
               fontWeight: 600,
-              color: '#FFFFFF',
+              color: accentFg,
               backgroundColor: theme.accent,
               border: 'none',
               borderRadius: `${buttonRadius}px`,

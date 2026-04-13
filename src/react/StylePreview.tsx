@@ -57,6 +57,8 @@ export function StylePreview({ config, enabled }: StylePreviewProps) {
   const theme = useMemo(() => {
     if (isThemeLocked) return baseTheme
     const activePreset = config.presets.find((p) => p.id === activePresetId)
+    // Default preset = "no style change" → drawer returns to base chrome.
+    // Only non-default presets trigger swatch-driven derivation.
     if (!activePreset || activePresetId === config.defaultStyleId) return baseTheme
     return deriveDrawerTheme(activePreset.swatches, baseTheme) ?? baseTheme
   }, [activePresetId, config.presets, config.defaultStyleId, baseTheme, isThemeLocked])

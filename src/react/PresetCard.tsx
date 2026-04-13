@@ -3,6 +3,7 @@
 import type { StylePreset, PreviewUITheme } from '../types/index.js'
 import { DEFAULT_UI_THEME } from '../types/index.js'
 import { TOKEN_TRANSITION_MS } from '../core/constants.js'
+import { parseHex } from '../themes/color-utils.js'
 
 interface PresetCardProps {
   preset: StylePreset
@@ -15,9 +16,14 @@ export function PresetCard({ preset, isActive, onClick, theme = DEFAULT_UI_THEME
   const swatches = preset.swatches ?? []
   const inactiveBorder = `${theme.border}88`
 
+  // Accent contrast: derive a readable foreground for elements on accent backgrounds.
+  const [ar, ag, ab] = parseHex(theme.accent)
+  const accentIsLight = (0.299 * ar + 0.587 * ag + 0.114 * ab) / 255 >= 0.5
+  const accentFg = accentIsLight ? '#1C1917' : '#FFFFFF'
+
   // Parse theme borderRadius to a number so we can scale it for cards.
   // Falls back to 8 (the previous hardcoded default) when not parseable.
-  const baseRadius = parseInt(theme.borderRadius ?? '8', 10) || 8
+  const baseRadius = parseFloat(theme.borderRadius ?? '8') || 8
   const cardRadius = Math.min(14, Math.max(4, baseRadius * 1.25))
 
   return (
@@ -150,7 +156,7 @@ export function PresetCard({ preset, isActive, onClick, theme = DEFAULT_UI_THEME
           style={{ flexShrink: 0, marginTop: '1px' }}
         >
           <circle cx="9" cy="9" r="9" fill={theme.accent} />
-          <path d="M5.5 9.5L7.5 11.5L12.5 6.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M5.5 9.5L7.5 11.5L12.5 6.5" stroke={accentFg} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       )}
     </button>

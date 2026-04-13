@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { TRIGGER_Z_INDEX } from '../core/constants.js'
+import { TRANSITION_MS, TRIGGER_Z_INDEX } from '../core/constants.js'
 
 /** Westline Marketing brand colors — always used regardless of drawer theme. */
 const WM = {
@@ -117,6 +117,10 @@ export function PreviewTrigger({ onOpen, onClose, drawerOpen, instanceId }: Prev
     moved: boolean
   } | null>(null)
 
+  // True after a drag gesture ends — checked by onClick to suppress the
+  // synthetic click that browsers fire after pointerup on the same element.
+  const dragJustFinishedRef = useRef(false)
+
   // ── Re-clamp on resize so trigger never stays off-screen ──
   useEffect(() => {
     const onResize = () => setY((prev) => clampY(prev))
@@ -167,16 +171,18 @@ export function PreviewTrigger({ onOpen, onClose, drawerOpen, instanceId }: Prev
         el.releasePointerCapture(e.pointerId)
       }
       dragStateRef.current = null
-      if (!state.moved) {
-        // No drag occurred — treat as a normal click.
-        ;(drawerOpen ? onClose : onOpen)()
-      } else {
+      if (state.moved) {
+        // A drag occurred — persist final position and suppress the
+        // click event the browser will fire after this pointerup.
         const finalY = clampY(state.startTop + (e.clientY - state.startClientY))
         writeStoredY(key, finalY)
         setDragging(false)
+        dragJustFinishedRef.current = true
       }
+      // Non-drag pointer taps fall through to the onClick handler,
+      // which also handles keyboard Enter / Space.
     },
-    [drawerOpen, onOpen, onClose, key],
+    [key],
   )
 
   const handlePointerCancel = useCallback(
@@ -193,17 +199,29 @@ export function PreviewTrigger({ onOpen, onClose, drawerOpen, instanceId }: Prev
     [],
   )
 
+  // ── Click handler (keyboard Enter/Space + pointer tap) ──
+
+  const handleClick = useCallback(() => {
+    if (dragJustFinishedRef.current) {
+      // A drag just completed — suppress the click so we don't toggle.
+      dragJustFinishedRef.current = false
+      return
+    }
+    ;(drawerOpen ? onClose : onOpen)()
+  }, [drawerOpen, onOpen, onClose])
+
   // ── Derived style values ──
   const width = hovered || focused ? TAB_WIDTH_HOVER : TAB_WIDTH_IDLE
   const transitionValue = dragging
     ? 'none'
     : reduceMotion
       ? 'none'
-      : 'width 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease'
+      : `width ${TRANSITION_MS}ms ease, background-color ${TRANSITION_MS}ms ease, box-shadow ${TRANSITION_MS}ms ease, opacity ${TRANSITION_MS}ms ease`
 
   return (
     <button
       ref={buttonRef}
+      onClick={handleClick}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -274,7 +292,7 @@ export function PreviewTrigger({ onOpen, onClose, drawerOpen, instanceId }: Prev
           backgroundColor: WM.green,
           borderRadius: '0 1px 1px 0',
           opacity: drawerOpen ? 0.4 : 1,
-          transition: reduceMotion ? 'none' : 'opacity 0.2s ease',
+          transition: reduceMotion ? 'none' : `opacity ${TRANSITION_MS}ms ease`,
         }}
       />
       {/* Chevron — points left (open) or right (close) */}
@@ -289,7 +307,7 @@ export function PreviewTrigger({ onOpen, onClose, drawerOpen, instanceId }: Prev
           marginLeft: '2px',
           flexShrink: 0,
           transform: drawerOpen ? 'rotate(180deg)' : 'none',
-          transition: reduceMotion ? 'none' : 'transform 0.2s ease',
+          transition: reduceMotion ? 'none' : `transform ${TRANSITION_MS}ms ease`,
         }}
       >
         <path d="M6.5 1.5L2 7l4.5 5.5" stroke={WM.gray} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
