@@ -30,12 +30,18 @@ Instructions:
    - 3 alternates that each take the existing tokens in a clearly different
      direction (vary warmth, lightness, and accent color — not just shades)
    - Each preset must pass WCAG AA contrast (4.5:1 body text)
+   - Accent foreground contrast is handled automatically by the package
+     (it selects white or dark text on accent backgrounds via luminance),
+     so presets can use any accent color without worrying about button text
 
 6. Create src/preview-styles/config.ts with:
    - targetSelector matching the wrapper class
    - presets + allowedTokens
    - instanceId (a stable identifier for this site — do NOT also set storageKey)
-   - drawerTheme: 'auto' (default) for swatch-derived drawer chrome, or 'studio' | 'techie' | 'rustic' to lock the drawer
+   - drawerTheme: 'auto' (default) derives drawer chrome from the active
+     preset's swatches; the default preset (empty variables) uses the
+     Studio base theme. Set 'studio' | 'techie' | 'rustic' to lock the
+     drawer to a static built-in theme instead.
    - Dev-mode validatePreset check
 
 7. Mount in the layout:
@@ -43,6 +49,9 @@ Instructions:
    - import { StylePreview } from '@westline/style-preview/client'
    - <PrepaintScript config={...} /> before the theme wrapper
    - <StylePreview config={...} /> after the theme wrapper
+   - The edge trigger tab is draggable (vertical repositioning) and
+     keyboard-accessible (Enter/Space to toggle). It respects
+     prefers-reduced-motion by disabling transitions.
 
 8. Add NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true to .env.local
    (also add it to .env.example if one exists)
@@ -82,9 +91,14 @@ Instructions:
    - [NAME]: [DESCRIPTION]
 
 5. Create src/preview-styles/config.ts (use instanceId, not storageKey,
-   for new sites; set drawerTheme to 'auto' or omit it for swatch-derived behavior, or use 'studio' | 'techie' | 'rustic' to lock the drawer),
-   mount PrepaintScript + StylePreview in the layout,
+   for new sites; set drawerTheme to 'auto' or omit it — 'auto' derives
+   drawer chrome from the active preset's swatches, falling back to the
+   Studio base for the default preset. Use 'studio' | 'techie' | 'rustic'
+   to lock the drawer to a static built-in theme).
+   Mount PrepaintScript + StylePreview in the layout,
    add NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true to .env.local.
+   Note: the edge trigger is draggable, keyboard-accessible, and
+   respects prefers-reduced-motion automatically.
 
 6. Token audit + typecheck + verify.
 
@@ -105,7 +119,7 @@ You only need to fill in the preset names/descriptions. Claude finds everything 
 ## What each prompt does NOT include (by design)
 
 - **Theme class, tokens, layout path** — Claude reads the project to discover these. You don't need to look them up.
-- **Specific hex values for presets** — Claude derives WCAG-compliant values from the existing tokens and the direction you describe (or invents directions if you use the minimal prompt).
+- **Specific hex values for presets** — Claude derives WCAG-compliant values from the existing tokens and the direction you describe (or invents directions if you use the minimal prompt). The package auto-selects foreground contrast on accent backgrounds, so any accent color works.
 - **Source copying** — The picker engine lives in the installed `@westline/style-preview` package. Only `src/preview-styles/*` stays in the consuming repo.
 - **Step-by-step file creation details** — GUIDE.md inside the installed package handles that. The prompt points Claude to it.
 

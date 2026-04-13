@@ -25,6 +25,12 @@ export const STOREFRONT_TOKENS: StorefrontToken[] = [
 ]
 
 // 2. Define 4 presets. The default preset MUST have empty variables.
+//
+// Accent foreground contrast: the package automatically selects white or dark
+// text for elements rendered on accent-colored backgrounds (buttons, badges,
+// etc.) using ITU-R BT.601 weighted luminance. Consumers do not need to
+// provide an accent foreground token or worry about WCAG contrast on accent
+// buttons — any accent hex value works.
 export const storefrontPresets: StylePreset[] = [
   {
     id: 'default',
@@ -60,8 +66,8 @@ export const storefrontPresets: StylePreset[] = [
       '--border': '#3D3428',
       '--text': '#F0E8DC',
       '--text-muted': '#A69882',
-      '--accent': '#CC8A10',
-      '--accent-hover': '#E09E28',
+      '--accent': '#CC8A10',       // lighter accent — package auto-selects dark foreground
+      '--accent-hover': '#E09E28', // same auto-contrast applies to hover state
     },
     swatches: ['#1A1510', '#2E261D', '#F0E8DC', '#CC8A10', '#3D3428'],
   },
@@ -76,8 +82,8 @@ export const storefrontPresets: StylePreset[] = [
       '--border': '#2B3C30',
       '--text': '#E6ECE4',
       '--text-muted': '#8FA093',
-      '--accent': '#6AAA64',
-      '--accent-hover': '#85C27F',
+      '--accent': '#6AAA64',       // mid-range accent — package auto-selects white foreground
+      '--accent-hover': '#85C27F', // brighter hover; auto-contrast recalculates per state
     },
     swatches: ['#0F1612', '#1E2B23', '#E6ECE4', '#6AAA64', '#2B3C30'],
   },
@@ -90,5 +96,7 @@ export const exampleConfig: PreviewConfig = {
   presets: storefrontPresets,
   allowedTokens: STOREFRONT_TOKENS,
   instanceId: 'storefront-preview', // stable identifier per site
-  drawerTheme: 'auto', // default; use 'studio' | 'techie' | 'rustic' to lock the drawer
+  drawerTheme: 'auto', // derives drawer chrome from active preset swatches;
+                       // default preset (empty variables) falls back to Studio base.
+                       // Use 'studio' | 'techie' | 'rustic' to lock the drawer instead.
 }

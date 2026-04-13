@@ -185,7 +185,9 @@ Run through this checklist on the staging deploy:
 
 ```text
 [ ] Trigger visible on the intended routes
+[ ] Trigger can be dragged up/down along the right edge; position persists across reloads
 [ ] Presets change the whole themed surface
+[ ] Active preset card shows an accent-colored left-edge bar
 [ ] Selection persists across navigation
 [ ] Hard refresh keeps the right preset without flash
 [ ] ?previewStyle=preset-id loads the preset
@@ -194,6 +196,13 @@ Run through this checklist on the staging deploy:
 [ ] Mobile layout remains usable
 [ ] Production/staging env gating works correctly
 ```
+
+## Accessibility & UX Notes
+
+- **Reduced motion:** When `prefers-reduced-motion` is active, all trigger transitions are disabled. Drag repositioning still works.
+- **Hydration:** The component uses React 18's `useSyncExternalStore` for SSR/hydration, avoiding flash of missing content on first render.
+- **Dynamic border-radius:** Drawer and card border radii scale proportionally from the theme's `borderRadius` token (drawer = base x 1.6, cards = base x 1.25, buttons = base x 1.0, all clamped to reasonable bounds).
+- **Trigger position:** The edge tab is draggable along the right viewport edge (clamped to 10--90% of viewport height). Position is persisted in localStorage, keyed by `instanceId`.
 
 ## 8. Client Handoff
 
@@ -238,7 +247,7 @@ The package ships with three built-in drawer themes plus an auto mode:
 
 | Theme | Look | Best for |
 |---|---|---|
-| `auto` | Derives drawer chrome from the active preset swatches | Default behavior |
+| `auto` | Derives drawer chrome from the active preset swatches (non-default presets only) | Default behavior |
 | `studio` | Light, Westline green accent, soft radius | Client presentations |
 | `techie` | Dark, electric blue accent, sharp corners | Developer/internal review |
 | `rustic` | Warm dark, copper accent, industrial fonts | Trades/equipment clients |
@@ -251,6 +260,8 @@ export const previewConfig: PreviewConfig = {
   drawerTheme: 'auto',  // default when omitted; use studio/techie/rustic to lock the drawer
 }
 ```
+
+**Auto-derive caveat:** When the active preset is the configured default (i.e., `defaultStyleId`), auto mode falls back to the Studio base theme rather than deriving from swatches. Only non-default presets trigger swatch-driven drawer chrome.
 
 ### Custom UI Theme Override
 

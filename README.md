@@ -8,6 +8,15 @@ Reusable style preview engine for Westline client sites. Install it into separat
 - The site already uses CSS custom properties for theme tokens
 - You want a reusable picker engine without copying source between repos
 
+## Features
+
+- **Draggable trigger** — edge tab can be repositioned vertically; position persists in localStorage
+- **Accent bar indicator** — active preset card shows a colored left-edge bar
+- **Dynamic border-radius** — drawer and card radii scale from `theme.borderRadius`
+- **Contrast-safe accent foregrounds** — CTA button text adapts automatically for light/dark accent colors
+- **Keyboard accessible** — trigger responds to Enter/Space, not just pointer events
+- **prefers-reduced-motion** — all animations respect the user's OS motion preference
+
 ## Install
 
 ```bash
@@ -56,6 +65,8 @@ import { StylePreview, useStylePreview, buildPreviewUrl } from '@westline/style-
 ```
 
 Both `PrepaintScript` and `StylePreview` accept an optional `enabled?: boolean` prop. When omitted, they fall back to `process.env.NEXT_PUBLIC_ENABLE_STYLE_PREVIEW === 'true'`.
+
+The `StylePreview` trigger is keyboard accessible (Enter/Space) and draggable — users can reposition it vertically, with the position persisted across sessions. All transitions respect `prefers-reduced-motion`.
 
 ## Consumer Repo Shape
 

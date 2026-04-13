@@ -4,7 +4,7 @@ This is a portable style preview feature shipped as an npm package. When a user 
 
 ## What This Is
 
-A staging-only feature that adds an edge tab + drawer to a themed website so clients can switch between color presets and pick a design direction. It overrides CSS custom properties on a theme wrapper class. Gated behind `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true` (or an explicit `enabled` prop) — renders nothing without it.
+A staging-only feature that adds a draggable edge tab + drawer to a themed website so clients can switch between color presets and pick a design direction. It overrides CSS custom properties on a theme wrapper class. Gated behind `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true` (or an explicit `enabled` prop) — renders nothing without it. Requires React 18+ (uses `useSyncExternalStore` for hydration-safe state). Accessible: full keyboard navigation, `prefers-reduced-motion` support on the trigger, and contrast-safe accent foregrounds on CTA buttons.
 
 ## How to Implement Into a Target Project
 
@@ -63,6 +63,10 @@ When asked to add style preview to a project, do the following:
 - See `README.md` for the package API reference
 - Three built-in drawer themes: `studio` (light), `techie` (dark), `rustic` (warm dark)
 - Default drawer behavior is `auto`, which derives the drawer chrome from the active preset swatches when available
+- Auto-derive caveat: the default preset uses the base theme as-is (no swatch derivation); non-default presets derive drawer chrome from their swatches
+- Trigger is draggable along the viewport edge; position persists in localStorage keyed by `instanceId`
+- Active preset is indicated by an accent bar on its card
+- Border-radius scales dynamically from theme tokens
 - Dev-mode: append `?previewDrawer=techie` to any URL to preview the static built-in drawer themes without editing config
 - Bills Truck & Equipment Sales was the reference implementation that seeded this package
 
