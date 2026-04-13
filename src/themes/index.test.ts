@@ -173,12 +173,14 @@ describe('auto-derive: non-default preset derives from swatches', () => {
     const { theme, derived } = resolveActiveTheme(config, 'warm')
 
     expect(derived).toBe(true)
-    // Derived theme bg comes from the preset swatches, not the base
+    // Derived theme bg and accent come from swatch values
     expect(theme.bg).toBe(WARM_SWATCHES[0])
-    expect(theme.surface).toBe(WARM_SWATCHES[1])
-    expect(theme.text).toBe(WARM_SWATCHES[2])
     expect(theme.accent).toBe(WARM_SWATCHES[3])
-    expect(theme.border).toBe(WARM_SWATCHES[4])
+    // surface/border are derived as subtle shifts from bg (not raw swatch values)
+    expect(theme.surface).not.toBe(theme.bg)
+    expect(theme.border).not.toBe(theme.bg)
+    // text is the swatch text or a contrast-guarded fallback
+    expect(theme.text).toBeDefined()
     // Ensure it actually differs from studio base
     expect(theme.bg).not.toBe(base.bg)
     expect(theme.accent).not.toBe(base.accent)

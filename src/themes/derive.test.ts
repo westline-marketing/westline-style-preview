@@ -74,16 +74,20 @@ describe('deriveDrawerTheme', () => {
 
     expect(result).not.toBeNull()
     expect(result!.bg).toBe('#0F1114')
-    expect(result!.surface).toBe('#23272F')
     expect(result!.text).toBe('#F0F0F0')
     expect(result!.accent).toBe('#E8930C')
-    expect(result!.border).toBe('#2E3440')
+    // bgAlt, surface, border are derived from bg shifted toward text
+    // (not raw swatch values) to keep the drawer palette coherent
+    expect(result!.bgAlt).not.toBe(result!.bg) // shifted, not identical
   })
 
-  it('computes bgAlt as midpoint of bg and surface', () => {
+  it('computes bgAlt as a subtle shift from bg toward text', () => {
     const swatches = ['#000000', '#ffffff', '#F0F0F0', '#E8930C', '#2E3440']
     const result = deriveDrawerTheme(swatches, BASE_THEME)
-    expect(result!.bgAlt).toBe('#808080')
+    // 6% lerp from #000000 toward #F0F0F0 — should be a very dark gray, not #808080
+    expect(result!.bgAlt).not.toBe('#808080')
+    // bgAlt should stay close to bg (dark), not jump to medium gray
+    expect(result!.bgAlt).toBe(lerpHex('#000000', '#F0F0F0', 0.06))
   })
 
   it('computes textMuted as text blended toward bg', () => {
@@ -198,6 +202,11 @@ describe('deriveDrawerTheme', () => {
         expect(result!.text).not.toBe(result!.bg)
         // Text should be the light surface color, not the dark swatch text
         expect(result!.text).toBe(swatches[1]) // surface
+        // bgAlt/surface/border should stay DARK (close to bg), not washed-out
+        // middle grays from raw swatch values
+        expect(result!.bgAlt).toBe(lerpHex(swatches[0], swatches[1], 0.06))
+        expect(result!.surface).toBe(lerpHex(swatches[0], swatches[1], 0.12))
+        expect(result!.border).toBe(lerpHex(swatches[0], swatches[1], 0.18))
       }
     })
   })

@@ -35,11 +35,15 @@ export function deriveDrawerTheme(
       : isDark ? '#E6EDF3' : '#1C1917'
   }
 
+  // Derive all background-tier colors as subtle shifts from bg toward
+  // drawerText. This keeps bgAlt/surface/border in the same lightness
+  // family as bg, preventing washed-out card backgrounds when the raw
+  // swatch surface/border are from the opposite lightness range.
   return {
     bg,
-    bgAlt: lerpHex(bg, surface, 0.5),
-    surface,
-    border,
+    bgAlt: lerpHex(bg, drawerText, 0.06),
+    surface: lerpHex(bg, drawerText, 0.12),
+    border: lerpHex(bg, drawerText, 0.18),
     text: drawerText,
     textMuted: lerpHex(drawerText, bg, 0.45),
     accent,
