@@ -2,6 +2,7 @@
 
 import type { StylePreset, PreviewUITheme } from '../types/index.js'
 import { DEFAULT_UI_THEME } from '../types/index.js'
+import { TOKEN_TRANSITION_MS } from '../core/constants.js'
 
 interface PresetCardProps {
   preset: StylePreset
@@ -13,6 +14,11 @@ interface PresetCardProps {
 export function PresetCard({ preset, isActive, onClick, theme = DEFAULT_UI_THEME }: PresetCardProps) {
   const swatches = preset.swatches ?? []
   const inactiveBorder = `${theme.border}88`
+
+  // Parse theme borderRadius to a number so we can scale it for cards.
+  // Falls back to 8 (the previous hardcoded default) when not parseable.
+  const baseRadius = parseInt(theme.borderRadius ?? '8', 10) || 8
+  const cardRadius = Math.min(14, Math.max(4, baseRadius * 1.25))
 
   return (
     <button
@@ -27,13 +33,15 @@ export function PresetCard({ preset, isActive, onClick, theme = DEFAULT_UI_THEME
         width: '100%',
         minHeight: '44px',
         padding: '10px 12px',
-        borderRadius: theme.borderRadius ?? '8px',
+        borderRadius: `${cardRadius}px`,
         border: isActive ? `2px solid ${theme.accent}` : `2px solid ${inactiveBorder}`,
         backgroundColor: isActive ? `${theme.accent}14` : theme.bgAlt,
         cursor: 'pointer',
-        transition: 'border-color 0.15s ease, background-color 0.15s ease',
+        transition: `border-color ${TOKEN_TRANSITION_MS}ms ease, background-color ${TOKEN_TRANSITION_MS}ms ease, border-radius ${TOKEN_TRANSITION_MS}ms ease`,
         boxSizing: 'border-box',
         fontFamily: theme.fontBody,
+        position: 'relative',
+        overflow: 'hidden',
       }}
       onMouseEnter={(e) => {
         if (!isActive) {
@@ -53,6 +61,21 @@ export function PresetCard({ preset, isActive, onClick, theme = DEFAULT_UI_THEME
         e.currentTarget.style.outline = 'none'
       }}
     >
+      {/* Left-edge accent bar — visible when active */}
+      <span
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: '15%',
+          bottom: '15%',
+          width: isActive ? '3px' : '0px',
+          backgroundColor: theme.accent,
+          borderRadius: '0 2px 2px 0',
+          transition: `width ${TOKEN_TRANSITION_MS}ms ease, background-color ${TOKEN_TRANSITION_MS}ms ease`,
+        }}
+      />
+
       {/* Swatches (top) + label / description (below), left-aligned */}
       <div
         style={{

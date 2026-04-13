@@ -33,9 +33,14 @@ export function PreviewDrawer({
   const [isDesktop, setIsDesktop] = useState(true)
 
   const isDark = 'isDark' in theme ? theme.isDark : true
-  const radius = theme.borderRadius ?? '6px'
   const shadow = theme.shadowElevation ?? '0 8px 32px rgba(0,0,0,0.6)'
   const backdropTint = isDark ? 'rgba(0,0,0,0.5)' : 'rgba(28,25,23,0.25)'
+
+  // Parse theme borderRadius to a number so we can scale it for different
+  // UI surfaces.  Falls back to 6 when the string isn't parseable.
+  const baseRadius = parseInt(theme.borderRadius ?? '6', 10) || 6
+  const drawerRadius = Math.min(22, Math.max(0, baseRadius * 1.6))
+  const buttonRadius = Math.min(14, Math.max(4, baseRadius))
 
   // Responsive check (avoids SSR window access in style object)
   useEffect(() => {
@@ -157,7 +162,7 @@ export function PreviewDrawer({
           backgroundColor: theme.bg,
           border: `1px solid ${theme.border}`,
           boxShadow: shadow,
-          transition: `background-color ${TOKEN_TRANSITION_MS}ms ease, border-color ${TOKEN_TRANSITION_MS}ms ease, box-shadow ${TOKEN_TRANSITION_MS}ms ease`,
+          transition: `background-color ${TOKEN_TRANSITION_MS}ms ease, border-color ${TOKEN_TRANSITION_MS}ms ease, box-shadow ${TOKEN_TRANSITION_MS}ms ease, border-radius ${TOKEN_TRANSITION_MS}ms ease`,
           display: 'flex',
           flexDirection: 'column',
           fontFamily: theme.fontBody,
@@ -168,15 +173,20 @@ export function PreviewDrawer({
                 bottom: 0,
                 width: '320px',
                 borderLeft: `1px solid ${theme.border}`,
-                borderRadius: 0,
+                borderTopLeftRadius: `${drawerRadius}px`,
+                borderBottomLeftRadius: `${drawerRadius}px`,
+                borderTopRightRadius: 0,
+                borderBottomRightRadius: 0,
               }
             : {
                 left: 0,
                 right: 0,
                 bottom: 0,
                 maxHeight: '70vh',
-                borderTopLeftRadius: '12px',
-                borderTopRightRadius: '12px',
+                borderTopLeftRadius: `${drawerRadius}px`,
+                borderTopRightRadius: `${drawerRadius}px`,
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
                 borderTop: `1px solid ${theme.border}`,
               }),
         }}
@@ -230,11 +240,11 @@ export function PreviewDrawer({
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
-              borderRadius: radius,
+              borderRadius: `${Math.min(10, buttonRadius)}px`,
               border: 'none',
               backgroundColor: 'transparent',
               color: theme.textMuted,
-              transition: `color ${TOKEN_TRANSITION_MS}ms ease`,
+              transition: `color ${TOKEN_TRANSITION_MS}ms ease, border-radius ${TOKEN_TRANSITION_MS}ms ease`,
             }}
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ display: 'block' }}>
@@ -290,11 +300,11 @@ export function PreviewDrawer({
               color: theme.textMuted,
               backgroundColor: theme.bgAlt,
               border: `1px solid ${theme.border}`,
-              borderRadius: radius,
+              borderRadius: `${buttonRadius}px`,
               cursor: 'pointer',
               textAlign: 'center',
               fontFamily: theme.fontBody,
-              transition: `background-color ${TOKEN_TRANSITION_MS}ms ease, border-color ${TOKEN_TRANSITION_MS}ms ease, color ${TOKEN_TRANSITION_MS}ms ease`,
+              transition: `background-color ${TOKEN_TRANSITION_MS}ms ease, border-color ${TOKEN_TRANSITION_MS}ms ease, color ${TOKEN_TRANSITION_MS}ms ease, border-radius ${TOKEN_TRANSITION_MS}ms ease`,
             }}
           >
             Reset
@@ -313,11 +323,11 @@ export function PreviewDrawer({
               color: '#FFFFFF',
               backgroundColor: theme.accent,
               border: 'none',
-              borderRadius: radius,
+              borderRadius: `${buttonRadius}px`,
               cursor: 'pointer',
               textAlign: 'center',
               fontFamily: theme.fontBody,
-              transition: `background-color ${TOKEN_TRANSITION_MS}ms ease, color ${TOKEN_TRANSITION_MS}ms ease`,
+              transition: `background-color ${TOKEN_TRANSITION_MS}ms ease, color ${TOKEN_TRANSITION_MS}ms ease, border-radius ${TOKEN_TRANSITION_MS}ms ease`,
             }}
           >
             Copy Link
