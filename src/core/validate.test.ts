@@ -183,6 +183,33 @@ describe('validate', () => {
       expect(warnSpy).not.toHaveBeenCalled()
     })
 
+    it('warns for a preset with empty variables when it is not the defaultStyleId', () => {
+      process.env.NODE_ENV = 'development'
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const preset: StylePreset = {
+        id: 'swatch-only',
+        label: 'Swatch Only',
+        variables: {},
+      }
+      expect(validatePreset(preset, undefined, 'original')).toBe(true)
+      expect(warnSpy).toHaveBeenCalledOnce()
+      expect(warnSpy).toHaveBeenCalledWith(
+        '[style-preview] Preset "swatch-only" has 0 swatches (5 required for auto drawer theming)'
+      )
+    })
+
+    it('does not warn for default preset identified by defaultStyleId even with empty variables', () => {
+      process.env.NODE_ENV = 'development'
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const preset: StylePreset = {
+        id: 'original',
+        label: 'Original',
+        variables: {},
+      }
+      expect(validatePreset(preset, undefined, 'original')).toBe(true)
+      expect(warnSpy).not.toHaveBeenCalled()
+    })
+
     it('does not warn in production even when swatches are missing', () => {
       process.env.NODE_ENV = 'production'
       const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})

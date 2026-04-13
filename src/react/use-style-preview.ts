@@ -61,7 +61,7 @@ export function useStylePreview(
     // Dev-mode validation: warn about any presets with disallowed tokens
     if (process.env.NODE_ENV !== 'production') {
       for (const preset of config.presets) {
-        if (!validatePreset(preset, config.allowedTokens)) {
+        if (!validatePreset(preset, config.allowedTokens, config.defaultStyleId)) {
           console.warn(
             `[style-preview] Preset "${preset.id}" fails validation against allowedTokens.`,
             preset
@@ -82,7 +82,17 @@ export function useStylePreview(
     const el = document.querySelector(config.targetSelector) as HTMLElement | null
     if (!el) {
       setTargetFound(false)
-      return
+
+      // Watch for late-mounted wrapper (e.g., behind Suspense or lazy route)
+      const observer = new MutationObserver(() => {
+        const found = document.querySelector(config.targetSelector) as HTMLElement | null
+        if (found) {
+          setTargetFound(true)
+          observer.disconnect()
+        }
+      })
+      observer.observe(document.body, { childList: true, subtree: true })
+      return () => observer.disconnect()
     }
     setTargetFound(true)
 

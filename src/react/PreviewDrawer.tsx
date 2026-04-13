@@ -35,6 +35,8 @@ export function PreviewDrawer({
 }: PreviewDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
+  const focusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const savedOverflowRef = useRef<string>('')
   const [isDesktop, setIsDesktop] = useState(true)
 
   const isDark = 'isDark' in theme ? theme.isDark : true
@@ -98,7 +100,8 @@ export function PreviewDrawer({
     if (isOpen) {
       previousFocusRef.current = document.activeElement as HTMLElement
       document.addEventListener('keydown', handleKeyDown)
-      setTimeout(() => {
+      focusTimerRef.current = setTimeout(() => {
+        focusTimerRef.current = null
         const drawer = drawerRef.current
         if (drawer) {
           const first = drawer.querySelector<HTMLElement>(
@@ -108,21 +111,32 @@ export function PreviewDrawer({
         }
       }, TRANSITION_MS)
     } else {
+      if (focusTimerRef.current) {
+        clearTimeout(focusTimerRef.current)
+        focusTimerRef.current = null
+      }
       document.removeEventListener('keydown', handleKeyDown)
       previousFocusRef.current?.focus()
     }
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      if (focusTimerRef.current) {
+        clearTimeout(focusTimerRef.current)
+        focusTimerRef.current = null
+      }
+    }
   }, [isOpen, handleKeyDown])
 
   // Body scroll lock
   useEffect(() => {
     if (isOpen) {
+      savedOverflowRef.current = document.body.style.overflow
       document.body.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = ''
+      document.body.style.overflow = savedOverflowRef.current
     }
     return () => {
-      document.body.style.overflow = ''
+      document.body.style.overflow = savedOverflowRef.current
     }
   }, [isOpen])
 

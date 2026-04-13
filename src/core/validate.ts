@@ -4,7 +4,8 @@ const REQUIRED_SWATCH_COUNT = 5
 
 export function validatePreset(
   preset: StylePreset,
-  allowedTokens?: string[]
+  allowedTokens?: string[],
+  defaultStyleId?: string
 ): boolean {
   if (!preset.id || !preset.label) return false
   if (!preset.variables || typeof preset.variables !== 'object') return false
@@ -15,9 +16,11 @@ export function validatePreset(
   }
 
   // Warn in dev when a non-default preset is missing swatches for auto drawer theming
-  const hasVariables = Object.keys(preset.variables).length > 0
+  const isDefault = defaultStyleId
+    ? preset.id === defaultStyleId
+    : Object.keys(preset.variables).length === 0
   if (
-    hasVariables &&
+    !isDefault &&
     process.env.NODE_ENV !== 'production' &&
     (!preset.swatches || preset.swatches.length < REQUIRED_SWATCH_COUNT)
   ) {
