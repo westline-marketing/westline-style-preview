@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warm Earth — Style Preview Demo</title>
+  <style>
+    /* Reset */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Theme tokens — injected per preset */
+    .theme-storefront {
+      --bg: #1A1510;
+      --bg-alt: #241E16;
+      --surface: #2E261D;
+      --border: #3D3428;
+      --text: #F0E8DC;
+      --text-muted: #A69882;
+      --accent: #CC8A10;
+      --accent-hover: #E09E28;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .theme-storefront {
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    /* ── Preset badge ── */
+    .preset-badge {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 100;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+
+    /* ── Header / Nav ── */
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
+      background-color: var(--bg-alt);
+    }
+    .site-logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .site-logo span { color: var(--accent); }
+    .site-nav { display: flex; gap: 24px; list-style: none; }
+    .site-nav a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .site-nav a:hover { color: var(--text); }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 80px 32px 64px;
+      max-width: 720px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero p {
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 32px;
+    }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .btn-secondary:hover { border-color: var(--text-muted); }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 32px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-alt);
+    }
+    .stat-item { text-align: center; }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── Cards grid ── */
+    .section { padding: 64px 32px; max-width: 1080px; margin: 0 auto; }
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .section-header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .section-header p {
+      font-size: 15px;
+      color: var(--text-muted);
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--accent) 15%, transparent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--accent);
+      font-size: 20px;
+    }
+    .card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .card p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    /* ── Testimonial / Quote ── */
+    .testimonial-section {
+      padding: 64px 32px;
+      background: var(--bg-alt);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .testimonial {
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .testimonial blockquote {
+      font-size: 20px;
+      line-height: 1.6;
+      font-style: italic;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .testimonial-author {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .testimonial-author span { color: var(--accent); }
+
+    /* ── Pricing cards ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .pricing-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 24px;
+      text-align: center;
+      position: relative;
+    }
+    .pricing-card.featured {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .pricing-card.featured::before {
+      content: 'Popular';
+      position: absolute;
+      top: -11px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 12px;
+      border-radius: 10px;
+    }
+    .pricing-tier {
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .pricing-amount {
+      font-size: 40px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .pricing-amount span {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .pricing-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .pricing-features {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 24px;
+    }
+    .pricing-features li {
+      font-size: 14px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .pricing-features li::before {
+      content: '\2713';
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 10px;
+    }
+
+    /* ── Color swatches display ── */
+    .swatch-bar {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 24px;
+      margin-top: 48px;
+      border-top: 1px solid var(--border);
+    }
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .swatch-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+    }
+    .swatch-name {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      padding: 32px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      background: var(--bg-alt);
+    }
+    .site-footer p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .site-footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 28px; }
+      .stats-bar { gap: 24px; flex-wrap: wrap; }
+      .cards-grid, .pricing-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-storefront">
+    <div class="preset-badge">Warm Earth — :3003</div>
+
+    <!-- Header -->
+    <header class="site-header">
+      <div class="site-logo">West<span>line</span></div>
+      <nav>
+        <ul class="site-nav">
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Work</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1>Build something <em>people remember</em></h1>
+      <p>We design and ship digital products that look like they were built by a team ten times our size. Strategy, design, and code — all under one roof.</p>
+      <div class="hero-actions">
+        <button class="btn-primary">Get Started &rarr;</button>
+        <button class="btn-secondary">View Our Work</button>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-value">47</div>
+        <div class="stat-label">Projects shipped</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">12</div>
+        <div class="stat-label">Active clients</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">98%</div>
+        <div class="stat-label">Client retention</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">4.9</div>
+        <div class="stat-label">Avg rating</div>
+      </div>
+    </div>
+
+    <!-- Feature cards -->
+    <section class="section">
+      <div class="section-header">
+        <h2>What we do</h2>
+        <p>End-to-end capabilities to take your product from idea to launch.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon">&#9672;</div>
+          <h3>Brand Strategy</h3>
+          <p>Positioning, messaging, and visual identity that cuts through noise and sticks in people's heads.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">&#9998;</div>
+          <h3>Product Design</h3>
+          <p>Interfaces that feel intuitive from the first click. Research-driven, detail-obsessed, pixel-perfect.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">&#9000;</div>
+          <h3>Web Development</h3>
+          <p>Fast, accessible, production-grade code. Next.js, React, and whatever the stack calls for.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">&#9733;</div>
+          <h3>Growth & SEO</h3>
+          <p>Technical SEO, content strategy, and conversion optimization that compounds over time.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">&#9881;</div>
+          <h3>Infrastructure</h3>
+          <p>CI/CD, hosting, monitoring, and the boring stuff that keeps your product running at 3 AM.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">&#9889;</div>
+          <h3>AI Integration</h3>
+          <p>LLM-powered features, RAG pipelines, and intelligent automation that actually ships.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonial -->
+    <section class="testimonial-section">
+      <div class="testimonial">
+        <blockquote>"They rebuilt our entire web presence in six weeks. The design quality was on another level — our clients now think we're a much bigger operation than we are."</blockquote>
+        <div class="testimonial-author">Mark Thompson, <span>CEO at Ridgeline Equipment</span></div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Simple pricing</h2>
+        <p>No surprises. Pick the engagement that fits.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-tier">Starter</div>
+          <div class="pricing-amount">$3k<span>/mo</span></div>
+          <div class="pricing-desc">For teams who need design support</div>
+          <ul class="pricing-features">
+            <li>Unlimited design requests</li>
+            <li>One active request at a time</li>
+            <li>48-hour turnaround</li>
+            <li>Slack support</li>
+          </ul>
+          <button class="btn-secondary" style="width:100%">Get Started</button>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pricing-tier">Growth</div>
+          <div class="pricing-amount">$6k<span>/mo</span></div>
+          <div class="pricing-desc">Design + development, shipped fast</div>
+          <ul class="pricing-features">
+            <li>Everything in Starter</li>
+            <li>Two active requests</li>
+            <li>Full-stack development</li>
+            <li>Priority support</li>
+          </ul>
+          <button class="btn-primary" style="width:100%">Get Started</button>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-tier">Scale</div>
+          <div class="pricing-amount">$12k<span>/mo</span></div>
+          <div class="pricing-desc">Dedicated team, unlimited scope</div>
+          <ul class="pricing-features">
+            <li>Everything in Growth</li>
+            <li>Unlimited active requests</li>
+            <li>Dedicated project lead</li>
+            <li>Strategy & consulting</li>
+          </ul>
+          <button class="btn-secondary" style="width:100%">Get Started</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Swatch display -->
+    <div class="swatch-bar">
+      <div class="swatch">
+        <div class="swatch-circle" style="background:var(--bg)"></div>
+        <span class="swatch-name">bg</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:var(--bg-alt)"></div>
+        <span class="swatch-name">bg-alt</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:var(--surface)"></div>
+        <span class="swatch-name">surface</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:var(--border)"></div>
+        <span class="swatch-name">border</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:var(--text)"></div>
+        <span class="swatch-name">text</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:var(--text-muted)"></div>
+        <span class="swatch-name">muted</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:var(--accent)"></div>
+        <span class="swatch-name">accent</span>
+      </div>
+      <div class="swatch">
+        <div class="swatch-circle" style="background:var(--accent-hover)"></div>
+        <span class="swatch-name">hover</span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <p>&copy; 2026 Westline Marketing. <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+    </footer>
+  </div>
+</body>
+</html>
