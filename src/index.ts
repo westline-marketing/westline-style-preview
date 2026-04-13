@@ -11,7 +11,7 @@ export {
   parsePreviewDrawerParam,
 } from './themes/index.js'
 export { deriveDrawerTheme } from './themes/derive.js'
-export { parseHex, lerpHex } from './themes/color-utils.js'
+export { parseHex, lerpHex, wcagLuminance, contrastRatio } from './themes/color-utils.js'
 
 // Server-safe React component
 export { PrepaintScript } from './react/PrepaintScript.js'
