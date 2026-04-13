@@ -1,38 +1,62 @@
 import { describe, expect, it } from 'vitest'
-import { parseHex } from '../themes/color-utils.js'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+import { pickAccentForeground, contrastRatio } from '../themes/color-utils.js'
+import { parseRadius } from '../core/parse-radius.js'
 
 /**
- * Pure-logic mirrors of the computations inside PresetCard.tsx.
+ * Tests for the computations used by PresetCard.tsx.
  *
- * PresetCard is being updated to match PreviewDrawer:
- *   - parseFloat (not parseInt) for borderRadius
- *   - fallback = 8
- *   - accentFg derived from weighted luminance
+ * PresetCard delegates to shared helpers:
+ *   - pickAccentForeground() for accent contrast
+ *   - parseRadius() for border-radius parsing
  *
- * These helpers let us unit-test the math without rendering React.
+ * These tests verify the helpers produce correct results for the
+ * values PresetCard passes to them, plus edge cases.
  */
 
-/** Matches the updated radius parsing in PresetCard (parseFloat, fallback 8). */
+/** Mirrors the card-radius formula from PresetCard.tsx. */
 function computeCardRadius(borderRadius: string | undefined): number {
-  const baseRadius = parseFloat(borderRadius ?? '8') || 8
+  const baseRadius = parseRadius(borderRadius, 8)
   return Math.min(14, Math.max(4, baseRadius * 1.25))
 }
 
-/** Matches the accent foreground logic ported from PreviewDrawer. */
-function computeAccentFg(accentHex: string): string {
-  const [r, g, b] = parseHex(accentHex)
-  const accentIsLight = (0.299 * r + 0.587 * g + 0.114 * b) / 255 >= 0.5
-  return accentIsLight ? '#1C1917' : '#FFFFFF'
-}
+// ---------------------------------------------------------------------------
+// Source-code integration check: PresetCard.tsx must use the shared helpers
+// ---------------------------------------------------------------------------
+describe('PresetCard — source integration', () => {
+  const src = readFileSync(
+    resolve(__dirname, 'PresetCard.tsx'),
+    'utf-8',
+  )
+
+  it('uses pickAccentForeground (not inline luminance)', () => {
+    expect(src).toContain('pickAccentForeground')
+    // Should NOT contain the old inline computation
+    expect(src).not.toContain('accentIsLight')
+    expect(src).not.toContain('0.299')
+  })
+
+  it('uses parseRadius (not inline parseFloat fallback)', () => {
+    expect(src).toContain('parseRadius')
+    // Should NOT contain the old parseFloat-based pattern
+    expect(src).not.toMatch(/parseFloat\(theme\.borderRadius/)
+  })
+})
 
 // ---------------------------------------------------------------------------
 // Card radius clamping
-// Formula: Math.min(14, Math.max(4, parseFloat(borderRadius ?? '8') * 1.25))
+// Formula: Math.min(14, Math.max(4, parseRadius(borderRadius, 8) * 1.25))
 // ---------------------------------------------------------------------------
 describe('PresetCard — card radius clamping', () => {
-  it('falls back to 8 when input is 0 (falsy, so || 8 fires)', () => {
-    // parseFloat('0') = 0, which is falsy → || 8 → 8 * 1.25 = 10
-    expect(computeCardRadius('0')).toBe(10)
+  it('preserves zero when input is "0" (parseRadius returns 0, not fallback)', () => {
+    // parseRadius('0', 8) = 0 → 0 * 1.25 = 0 → clamped to 4
+    expect(computeCardRadius('0')).toBe(4)
+  })
+
+  it('preserves zero with px suffix ("0px")', () => {
+    // parseRadius('0px', 8) = 0 → 0 * 1.25 = 0 → clamped to 4
+    expect(computeCardRadius('0px')).toBe(4)
   })
 
   it('clamps to minimum 4 for very small baseRadius', () => {
@@ -72,94 +96,116 @@ describe('PresetCard — card radius clamping', () => {
 })
 
 // ---------------------------------------------------------------------------
-// Accent contrast (accentFg)
-// Weighted luminance: (0.299*R + 0.587*G + 0.114*B) / 255
-//   >= 0.5 → dark foreground (#1C1917)
-//   <  0.5 → white foreground (#FFFFFF)
+// Accent contrast (accentFg) — using pickAccentForeground
+// Picks #000000 or #FFFFFF based on maximum WCAG contrast ratio
 // ---------------------------------------------------------------------------
-describe('PresetCard — accent contrast (accentFg)', () => {
-  it('returns dark fg for white accent', () => {
-    expect(computeAccentFg('#FFFFFF')).toBe('#1C1917')
+describe('PresetCard — accent contrast (pickAccentForeground)', () => {
+  it('returns #000000 for white accent', () => {
+    expect(pickAccentForeground('#FFFFFF')).toBe('#000000')
   })
 
-  it('returns white fg for black accent', () => {
-    expect(computeAccentFg('#000000')).toBe('#FFFFFF')
+  it('returns #FFFFFF for black accent', () => {
+    expect(pickAccentForeground('#000000')).toBe('#FFFFFF')
   })
 
-  it('returns dark fg for a bright yellow accent (#FFD700)', () => {
-    // R=255 G=215 B=0 → (0.299*255 + 0.587*215 + 0.114*0)/255 ≈ 0.793
-    expect(computeAccentFg('#FFD700')).toBe('#1C1917')
+  it('returns #000000 for a bright yellow accent (#FFD700)', () => {
+    expect(pickAccentForeground('#FFD700')).toBe('#000000')
   })
 
-  it('returns white fg for a dark navy accent (#1A1D23)', () => {
-    // R=26 G=29 B=35 → (0.299*26 + 0.587*29 + 0.114*35)/255 ≈ 0.114
-    expect(computeAccentFg('#1A1D23')).toBe('#FFFFFF')
+  it('returns #FFFFFF for a dark navy accent (#1A1D23)', () => {
+    expect(pickAccentForeground('#1A1D23')).toBe('#FFFFFF')
   })
 
-  it('returns dark fg for a light pastel accent (#A8D8EA)', () => {
-    // R=168 G=216 B=234 → (0.299*168 + 0.587*216 + 0.114*234)/255 ≈ 0.798
-    expect(computeAccentFg('#A8D8EA')).toBe('#1C1917')
+  it('returns #000000 for a light pastel accent (#A8D8EA)', () => {
+    expect(pickAccentForeground('#A8D8EA')).toBe('#000000')
   })
 
-  it('returns white fg for a saturated red (#CC2222)', () => {
-    // R=204 G=34 B=34 → (0.299*204 + 0.587*34 + 0.114*34)/255 ≈ 0.335
-    expect(computeAccentFg('#CC2222')).toBe('#FFFFFF')
-  })
-
-  it('returns dark fg for the default package accent (#E8930C — light enough)', () => {
-    // R=232 G=147 B=12 → (0.299*232 + 0.587*147 + 0.114*12)/255
-    // = (69.368 + 86.289 + 1.368)/255 = 157.025/255 ≈ 0.616 → light → dark fg
-    expect(computeAccentFg('#E8930C')).toBe('#1C1917')
+  it('returns #FFFFFF for a saturated red (#CC2222)', () => {
+    expect(pickAccentForeground('#CC2222')).toBe('#FFFFFF')
   })
 
   it('handles shorthand hex (#FFF)', () => {
-    expect(computeAccentFg('#FFF')).toBe('#1C1917')
+    expect(pickAccentForeground('#FFF')).toBe('#000000')
   })
 
   it('handles shorthand hex (#000)', () => {
-    expect(computeAccentFg('#000')).toBe('#FFFFFF')
+    expect(pickAccentForeground('#000')).toBe('#FFFFFF')
   })
+
+  // Shipped accent colors: verify exact foreground AND confirm max contrast
+  const shippedAccents: Array<[string, string]> = [
+    ['#5B8A72', '#000000'],
+    ['#58A6FF', '#000000'],
+    ['#D4874D', '#000000'],
+    ['#CC8A10', '#000000'],
+    ['#6AAA64', '#000000'],
+  ]
+
+  for (const [accent, expectedFg] of shippedAccents) {
+    it(`picks ${expectedFg} for shipped accent ${accent}`, () => {
+      expect(pickAccentForeground(accent)).toBe(expectedFg)
+    })
+
+    it(`chosen fg for ${accent} has higher contrast than the alternative`, () => {
+      const altFg = expectedFg === '#000000' ? '#FFFFFF' : '#000000'
+      const chosenContrast = contrastRatio(accent, expectedFg)
+      const altContrast = contrastRatio(accent, altFg)
+      expect(chosenContrast).toBeGreaterThanOrEqual(altContrast)
+    })
+  }
 })
 
 // ---------------------------------------------------------------------------
-// parseFloat behavior (vs parseInt)
-// parseFloat preserves decimals; parseInt would truncate them.
-// The fallback (|| 8) catches NaN from unparseable strings and 0.
+// Radius parsing via parseRadius
+// Strict px/unitless parser — rejects rem/em/%, preserves zero
 // ---------------------------------------------------------------------------
-describe('PresetCard — parseFloat radius parsing', () => {
-  it('preserves decimal values that parseInt would truncate', () => {
-    // parseFloat('10.5') = 10.5; parseInt('10.5') = 10
-    // 10.5 * 1.25 = 13.125 (vs parseInt: 10 * 1.25 = 12.5)
+describe('PresetCard — parseRadius behavior', () => {
+  it('preserves decimal values', () => {
+    // parseRadius('10.5', 8) = 10.5 → 10.5 * 1.25 = 13.125
     expect(computeCardRadius('10.5')).toBe(13.125)
   })
 
   it('handles a sub-pixel value like 6.4', () => {
-    // parseFloat('6.4') = 6.4 → 6.4 * 1.25 = 8
+    // parseRadius('6.4', 8) = 6.4 → 6.4 * 1.25 = 8
     expect(computeCardRadius('6.4')).toBe(8)
   })
 
   it('falls back to 8 for NaN-producing strings', () => {
-    // parseFloat('abc') = NaN → || 8 → 8 * 1.25 = 10
+    // parseRadius('abc', 8) = 8 → 8 * 1.25 = 10
     expect(computeCardRadius('abc')).toBe(10)
   })
 
   it('falls back to 8 for empty string', () => {
-    // parseFloat('') = NaN → || 8 → 8 * 1.25 = 10
+    // parseRadius('', 8) = 8 → 8 * 1.25 = 10
     expect(computeCardRadius('')).toBe(10)
   })
 
-  it('treats "0" as falsy and falls back to 8', () => {
-    // parseFloat('0') = 0 → falsy → || 8 → 8 * 1.25 = 10
-    expect(computeCardRadius('0')).toBe(10)
+  it('preserves zero (does NOT fall back to 8)', () => {
+    // parseRadius('0', 8) = 0 → 0 * 1.25 = 0 → clamped to 4
+    expect(parseRadius('0', 8)).toBe(0)
+    expect(computeCardRadius('0')).toBe(4)
   })
 
-  it('handles value with px suffix (parseFloat stops at non-numeric)', () => {
-    // parseFloat('12px') = 12 → 12 * 1.25 = 15 → clamped to 14
+  it('preserves zero with px suffix', () => {
+    // parseRadius('0px', 8) = 0 → 0 * 1.25 = 0 → clamped to 4
+    expect(parseRadius('0px', 8)).toBe(0)
+    expect(computeCardRadius('0px')).toBe(4)
+  })
+
+  it('handles value with px suffix', () => {
+    // parseRadius('12px', 8) = 12 → 12 * 1.25 = 15 → clamped to 14
     expect(computeCardRadius('12px')).toBe(14)
   })
 
-  it('handles value with rem suffix', () => {
-    // parseFloat('0.75rem') = 0.75 → 0.75 * 1.25 = 0.9375 → clamped to 4 (min)
-    expect(computeCardRadius('0.75rem')).toBe(4)
+  it('rejects rem values and falls back', () => {
+    // parseRadius('0.75rem', 8) = 8 (fallback) → 8 * 1.25 = 10
+    expect(parseRadius('0.75rem', 8)).toBe(8)
+    expect(computeCardRadius('0.75rem')).toBe(10)
+  })
+
+  it('rejects 0.5rem and falls back', () => {
+    // parseRadius('0.5rem', 8) = 8 (fallback) → 8 * 1.25 = 10
+    expect(parseRadius('0.5rem', 8)).toBe(8)
+    expect(computeCardRadius('0.5rem')).toBe(10)
   })
 })

@@ -3,7 +3,8 @@
 import type { StylePreset, PreviewUITheme } from '../types/index.js'
 import { DEFAULT_UI_THEME } from '../types/index.js'
 import { TOKEN_TRANSITION_MS } from '../core/constants.js'
-import { parseHex } from '../themes/color-utils.js'
+import { pickAccentForeground } from '../themes/color-utils.js'
+import { parseRadius } from '../core/parse-radius.js'
 
 interface PresetCardProps {
   preset: StylePreset
@@ -17,13 +18,11 @@ export function PresetCard({ preset, isActive, onClick, theme = DEFAULT_UI_THEME
   const inactiveBorder = `${theme.border}88`
 
   // Accent contrast: derive a readable foreground for elements on accent backgrounds.
-  const [ar, ag, ab] = parseHex(theme.accent)
-  const accentIsLight = (0.299 * ar + 0.587 * ag + 0.114 * ab) / 255 >= 0.5
-  const accentFg = accentIsLight ? '#1C1917' : '#FFFFFF'
+  const accentFg = pickAccentForeground(theme.accent)
 
   // Parse theme borderRadius to a number so we can scale it for cards.
   // Falls back to 8 (the previous hardcoded default) when not parseable.
-  const baseRadius = parseFloat(theme.borderRadius ?? '8') || 8
+  const baseRadius = parseRadius(theme.borderRadius, 8)
   const cardRadius = Math.min(14, Math.max(4, baseRadius * 1.25))
 
   return (
