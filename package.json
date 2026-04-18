@@ -1,8 +1,18 @@
 {
   "name": "@westline/style-preview",
-  "version": "0.1.0-next.1",
+  "version": "0.1.0",
   "private": false,
   "description": "Reusable style preview engine for Westline client projects.",
+  "license": "UNLICENSED",
+  "author": "Westline Marketing",
+  "homepage": "https://github.com/westline-marketing/westline-style-preview#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/westline-marketing/westline-style-preview.git"
+  },
+  "bugs": {
+    "url": "https://github.com/westline-marketing/westline-style-preview/issues"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -24,14 +34,17 @@
     "./package.json": "./package.json"
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "build": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepack": "npm run build",
+    "prepare": "npm run build",
     "release:check": "npm pack --dry-run"
   },
   "peerDependencies": {
