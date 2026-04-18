@@ -12,7 +12,7 @@ When asked to add style preview to a project, do the following:
 
 ### 1. Install the package
 - Run `npm install @westline/style-preview` in the target project
-- If pulling from a private registry, make sure the target repo has an `.npmrc` with `NPM_TOKEN` configured
+- The package is published publicly on npm — no authentication, `.npmrc`, or `NPM_TOKEN` needed on any machine or CI
 
 ### 2. Discover the target project's theme
 - Read the target project's `globals.css` (or equivalent) to find the theme wrapper class (e.g., `.theme-storefront`) and its CSS custom properties (e.g., `--bg`, `--text`, `--accent`)

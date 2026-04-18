@@ -23,7 +23,7 @@ Reusable style preview engine for Westline client sites. Install it into separat
 npm install @westline/style-preview
 ```
 
-This package is intended for private registry use. Consumer repos should provide `NPM_TOKEN` during install on local machines, Vercel, and Railway.
+Published publicly on npm. No authentication required for install — works on local machines, Vercel, Railway, and any other CI without additional configuration.
 
 ## Quick Start
 

@@ -11,7 +11,7 @@ The feature is staging-only by default. Both `PrepaintScript` and `StylePreview`
 - React or Next.js site using TypeScript
 - CSS custom properties defined on a theme wrapper class
 - At least 3-5 theme tokens already consumed via `var(--token)`
-- Private package install access via `NPM_TOKEN`
+- `npm` 9+ (public package, no auth required)
 
 ## 1. Install the Package
 
@@ -21,15 +21,7 @@ In the consuming site repo:
 npm install @westline/style-preview
 ```
 
-If the package comes from private npm, keep a local `.npmrc` like this:
-
-```ini
-@westline:registry=https://registry.npmjs.org
-//registry.npmjs.org/:_authToken=${NPM_TOKEN}
-always-auth=true
-```
-
-Use the same token-based install flow in Vercel and Railway.
+Published publicly on npm (`https://www.npmjs.com/package/@westline/style-preview`). No `.npmrc` or auth token required. Vercel and Railway install it the same way — nothing extra to configure.
 
 ## 2. Create Local Presets
 
@@ -158,14 +150,12 @@ This flag is a build-time concern for the consuming app. Changing it requires a 
 
 ### Vercel
 
-- Set `NPM_TOKEN` at the team or project level
-- Set `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true` only in Preview or staging
+- Set `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true` only in Preview or staging environments
 - Leave it unset in Production
 - Use `vercel env pull` locally when you want parity with deployed envs
 
 ### Railway
 
-- Set `NPM_TOKEN` as a service variable
 - Set `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true` only in staging
 - Leave it unset in Production
 - Be careful with skipped builds when a `NEXT_PUBLIC_*` value changes

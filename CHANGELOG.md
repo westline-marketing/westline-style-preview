@@ -3,6 +3,11 @@
 All notable changes to `@westline/style-preview` are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-04-18
+
+### Changed
+- Docs: README, GUIDE, and CLAUDE.md updated to reflect public npm distribution (no `NPM_TOKEN` or `.npmrc` required)
+
 ## [0.1.0] - 2026-04-18
 
 Initial public release.
