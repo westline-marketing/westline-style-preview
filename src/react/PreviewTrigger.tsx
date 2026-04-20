@@ -16,7 +16,7 @@ const TAB_HEIGHT = 56
 const TAB_WIDTH_IDLE = 18
 const TAB_WIDTH_HOVER = 24
 const DRAG_THRESHOLD = 4
-const DEFAULT_Y_PERCENT = 0.5
+const DEFAULT_Y_PERCENT = 0.25
 const STORAGE_KEY_SUFFIX = '-tab-y'
 
 // ─── Reduced-motion subscription (useSyncExternalStore) ──────────────
