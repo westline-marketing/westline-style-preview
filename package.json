@@ -1,6 +1,6 @@
 {
   "name": "@westline/style-preview",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": false,
   "description": "Reusable style preview engine for Westline client projects.",
   "license": "UNLICENSED",

@@ -3,6 +3,11 @@
 All notable changes to `@westline/style-preview` are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2026-04-20
+
+### Changed
+- Default trigger position moved to 15% of viewport height on first load. Stored positions from prior drags are unaffected.
+
 ## [0.1.2] - 2026-04-20
 
 ### Changed
