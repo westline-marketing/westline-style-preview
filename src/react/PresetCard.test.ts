@@ -42,6 +42,16 @@ describe('PresetCard — source integration', () => {
     // Should NOT contain the old parseFloat-based pattern
     expect(src).not.toMatch(/parseFloat\(theme\.borderRadius/)
   })
+
+  it('sets flexShrink: 0 on the card button', () => {
+    // Cards sit inside a flex column drawer list with overflowY:auto. Without
+    // flex-shrink:0, long descriptions on narrow mobile viewports cause the
+    // flex algorithm to squash each card, and overflow:hidden (required for
+    // the accent bar) then clips the description text. Regression guard for
+    // https://github.com/westline-marketing/westline-style-preview issue
+    // surfaced on mobile Safari (iOS 17+).
+    expect(src).toMatch(/flexShrink:\s*0/)
+  })
 })
 
 // ---------------------------------------------------------------------------

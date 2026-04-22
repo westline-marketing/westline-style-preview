@@ -3,6 +3,11 @@
 All notable changes to `@westline/style-preview` are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - 2026-04-22
+
+### Fixed
+- Preset card descriptions were clipped on mobile when the drawer list couldn't fit every card at natural height. Cards now carry `flex-shrink: 0` so the flex algorithm can't squash them — the parent list scrolls instead, and long descriptions stay readable.
+
 ## [0.1.3] - 2026-04-20
 
 ### Changed

@@ -49,6 +49,10 @@ export function PresetCard({ preset, isActive, onClick, theme = DEFAULT_UI_THEME
         fontFamily: theme.fontBody,
         position: 'relative',
         overflow: 'hidden',
+        // Prevent flex-shrink from squashing cards vertically inside the
+        // scrollable preset list — otherwise long descriptions are clipped
+        // by the overflow:hidden needed to round the accent bar.
+        flexShrink: 0,
       }}
       onMouseEnter={(e) => {
         if (!isActive) {
