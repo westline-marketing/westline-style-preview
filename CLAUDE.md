@@ -72,7 +72,7 @@ When asked to add style preview to a project, do the following:
 
 ## Parallelization
 Use 5-6 parallel agents when implementing:
-- Agent 1: Install the package + verify NPM_TOKEN / registry config
+- Agent 1: Install the package from the public npm registry (no auth or `.npmrc` needed)
 - Agent 2: Discover project theme (read globals.css, layout, components)
 - Agent 3: Create presets with WCAG-compliant colors
 - Agent 4: Create config + mount components in layout + set env flag
