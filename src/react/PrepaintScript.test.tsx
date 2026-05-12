@@ -49,20 +49,20 @@ describe('PrepaintScript enabled prop', () => {
   })
 
   it('respects enabled={false} even when env var is "true"', () => {
-    vi.stubEnv('NEXT_PUBLIC_ENABLE_STYLE_PREVIEW', 'true')
+    vi.stubEnv('NEXT_PUBLIC_ENABLE_STYLE_SELECTOR', 'true')
     const result = PrepaintScript({ config: validConfig, enabled: false })
     expect(result).toBeNull()
   })
 
   it('falls back to env when enabled is undefined and env is "true"', () => {
-    vi.stubEnv('NEXT_PUBLIC_ENABLE_STYLE_PREVIEW', 'true')
+    vi.stubEnv('NEXT_PUBLIC_ENABLE_STYLE_SELECTOR', 'true')
     const result = PrepaintScript({ config: validConfig })
     assertScriptElement(result)
     expect(result.type).toBe('script')
   })
 
   it('returns null when enabled is undefined and env is empty string', () => {
-    vi.stubEnv('NEXT_PUBLIC_ENABLE_STYLE_PREVIEW', '')
+    vi.stubEnv('NEXT_PUBLIC_ENABLE_STYLE_SELECTOR', '')
     const result = PrepaintScript({ config: validConfig })
     expect(result).toBeNull()
   })

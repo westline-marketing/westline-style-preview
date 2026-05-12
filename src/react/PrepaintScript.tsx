@@ -4,8 +4,8 @@ import { generatePrepaintScript } from '../core/prepaint.js'
 interface PrepaintScriptProps {
   config: PreviewConfig
   /**
-   * Whether the preview feature is enabled. When omitted, falls back to
-   * checking `process.env.NEXT_PUBLIC_ENABLE_STYLE_PREVIEW === 'true'`
+   * Whether the style selector is enabled. When omitted, falls back to
+   * checking `process.env.NEXT_PUBLIC_ENABLE_STYLE_SELECTOR === 'true'`
    * so Next.js consumers can gate via env vars. Non-Next consumers should
    * pass this explicitly.
    */
@@ -13,7 +13,7 @@ interface PrepaintScriptProps {
 }
 
 export function PrepaintScript({ config, enabled }: PrepaintScriptProps) {
-  const isEnabled = enabled ?? process.env.NEXT_PUBLIC_ENABLE_STYLE_PREVIEW === 'true'
+  const isEnabled = enabled ?? process.env.NEXT_PUBLIC_ENABLE_STYLE_SELECTOR === 'true'
   if (!isEnabled) return null
 
   const script = generatePrepaintScript(config)

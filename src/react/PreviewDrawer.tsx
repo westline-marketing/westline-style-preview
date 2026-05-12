@@ -251,7 +251,7 @@ export function PreviewDrawer({
           </div>
           <button
             onClick={onClose}
-            aria-label="Close style preview"
+            aria-label="Close style selector"
             onFocus={focusStyle}
             onBlur={blurStyle}
             style={{

@@ -14,7 +14,7 @@ import {
   clearUrlParam,
 } from '../core/persistence.js'
 
-export interface UseStylePreviewReturn {
+export interface UseStyleSelectorReturn {
   activePresetId: string
   targetFound: boolean
   setPreset: (id: string) => void
@@ -25,14 +25,14 @@ export interface UseStylePreviewReturn {
   previewUrl: string
 }
 
-interface UseStylePreviewOptions {
+interface UseStyleSelectorOptions {
   enabled?: boolean
 }
 
-export function useStylePreview(
+export function useStyleSelector(
   config: PreviewConfig,
-  options: UseStylePreviewOptions = {}
-): UseStylePreviewReturn {
+  options: UseStyleSelectorOptions = {}
+): UseStyleSelectorReturn {
   const enabled = options.enabled ?? true
   const [activePresetId, setActivePresetId] = useState(config.defaultStyleId)
   const [targetFound, setTargetFound] = useState(false)
@@ -63,7 +63,7 @@ export function useStylePreview(
       for (const preset of config.presets) {
         if (!validatePreset(preset, config.allowedTokens, config.defaultStyleId)) {
           console.warn(
-            `[style-preview] Preset "${preset.id}" fails validation against allowedTokens.`,
+            `[style-selector] Preset "${preset.id}" fails validation against allowedTokens.`,
             preset
           )
         }

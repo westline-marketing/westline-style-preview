@@ -2,9 +2,9 @@
 
 ## Overview
 
-`@westline/style-preview` is a shared package for separate site repos. The package owns the picker engine, persistence, prepaint behavior, and UI shell. Each site repo keeps its own `src/preview-styles/config.ts` and `src/preview-styles/presets/*.ts`.
+`@westline/style-selector` is a shared package for separate site repos. The package owns the picker engine, persistence, prepaint behavior, and UI shell. Each site repo keeps its own `src/style-selector/config.ts` and `src/style-selector/presets/*.ts`.
 
-The feature is staging-only by default. Both `PrepaintScript` and `StylePreview` render nothing unless `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW === 'true'`.
+The feature is staging-only by default. Both `PrepaintScript` and `StyleSelector` render nothing unless `NEXT_PUBLIC_ENABLE_STYLE_SELECTOR === 'true'`.
 
 ## Prerequisites
 
@@ -18,17 +18,17 @@ The feature is staging-only by default. Both `PrepaintScript` and `StylePreview`
 In the consuming site repo:
 
 ```bash
-npm install @westline/style-preview
+npm install @westline/style-selector
 ```
 
-Published publicly on npm (`https://www.npmjs.com/package/@westline/style-preview`). No `.npmrc` or auth token required. Vercel and Railway install it the same way — nothing extra to configure.
+Published publicly on npm (`https://www.npmjs.com/package/@westline/style-selector`). No `.npmrc` or auth token required. Vercel and Railway install it the same way — nothing extra to configure.
 
 ## 2. Create Local Presets
 
-Create `src/preview-styles/presets/[surface].ts` inside the site repo.
+Create `src/style-selector/presets/[surface].ts` inside the site repo.
 
 ```ts
-import type { StylePreset } from '@westline/style-preview'
+import type { StylePreset } from '@westline/style-selector'
 
 type StorefrontToken =
   | '--bg' | '--bg-alt' | '--surface' | '--border'
@@ -75,11 +75,11 @@ Guidelines:
 
 ## 3. Create Local Config
 
-Create `src/preview-styles/config.ts` in the site repo.
+Create `src/style-selector/config.ts` in the site repo.
 
 ```ts
-import type { PreviewConfig } from '@westline/style-preview'
-import { validatePreset } from '@westline/style-preview'
+import type { PreviewConfig } from '@westline/style-selector'
+import { validatePreset } from '@westline/style-selector'
 import { storefrontPresets, STOREFRONT_TOKENS } from './presets/storefront'
 
 export const previewConfig: PreviewConfig = {
@@ -95,7 +95,7 @@ if (process.env.NODE_ENV !== 'production') {
   for (const preset of previewConfig.presets) {
     if (!validatePreset(preset, STOREFRONT_TOKENS)) {
       console.warn(
-        `[preview-styles] Preset "${preset.id}" fails validation against allowed tokens.`,
+        `[style-selector] Preset "${preset.id}" fails validation against allowed tokens.`,
         preset
       )
     }
@@ -115,9 +115,9 @@ Config rules:
 Import the server-safe and client entrypoints separately.
 
 ```tsx
-import { PrepaintScript } from '@westline/style-preview'
-import { StylePreview } from '@westline/style-preview/client'
-import { previewConfig } from '@/preview-styles/config'
+import { PrepaintScript } from '@westline/style-selector'
+import { StyleSelector } from '@westline/style-selector/client'
+import { previewConfig } from '@/style-selector/config'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -126,7 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <div className="theme-storefront min-h-screen">
         {children}
       </div>
-      <StylePreview config={previewConfig} />
+      <StyleSelector config={previewConfig} />
     </>
   )
 }
@@ -135,7 +135,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 Placement matters:
 
 - `PrepaintScript` goes before the themed wrapper
-- `StylePreview` goes after the wrapper
+- `StyleSelector` goes after the wrapper
 - Mount the picker once per site layout
 
 ## 5. Environment Setup
@@ -143,20 +143,20 @@ Placement matters:
 Local development:
 
 ```bash
-NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true npm run dev
+NEXT_PUBLIC_ENABLE_STYLE_SELECTOR=true npm run dev
 ```
 
 This flag is a build-time concern for the consuming app. Changing it requires a rebuild or redeploy.
 
 ### Vercel
 
-- Set `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true` only in Preview or staging environments
+- Set `NEXT_PUBLIC_ENABLE_STYLE_SELECTOR=true` only in Preview or staging environments
 - Leave it unset in Production
 - Use `vercel env pull` locally when you want parity with deployed envs
 
 ### Railway
 
-- Set `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true` only in staging
+- Set `NEXT_PUBLIC_ENABLE_STYLE_SELECTOR=true` only in staging
 - Leave it unset in Production
 - Be careful with skipped builds when a `NEXT_PUBLIC_*` value changes
 
@@ -199,10 +199,10 @@ Run through this checklist on the staging deploy:
 Once the client chooses a direction:
 
 1. Copy the winning preset values into the permanent site theme tokens
-2. Remove `PrepaintScript` and `StylePreview` from the site layout
-3. Delete local `src/preview-styles/*` files if they are no longer needed
-4. Remove `@westline/style-preview` from the site repo if the preview tool is no longer needed
-5. Remove `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW` from the site envs
+2. Remove `PrepaintScript` and `StyleSelector` from the site layout
+3. Delete local `src/style-selector/*` files if they are no longer needed
+4. Remove `@westline/style-selector` from the site repo if the preview tool is no longer needed
+5. Remove `NEXT_PUBLIC_ENABLE_STYLE_SELECTOR` from the site envs
 
 ## Migrating from pre-0.1 setups
 
@@ -260,7 +260,7 @@ export const previewConfig: PreviewConfig = {
 If the built-in themes don't fit, override entirely with `uiTheme` (takes precedence over `drawerTheme` and auto derivation):
 
 ```ts
-import type { PreviewConfig, PreviewUITheme } from '@westline/style-preview'
+import type { PreviewConfig, PreviewUITheme } from '@westline/style-selector'
 
 const sitePreviewTheme: PreviewUITheme = {
   bg: '#FFFFFF',
@@ -292,10 +292,10 @@ In development, append `?previewDrawer=techie` (or `studio` / `rustic`) to any p
 ## How It Works
 
 - `resolveDrawerTheme()` resolves the base drawer chrome: explicit `uiTheme` > explicit built-in `drawerTheme` > `'studio'` fallback
-- `StylePreview` applies swatch derivation in auto mode for non-default presets, using the authored swatches as hints for a coherent drawer palette
+- `StyleSelector` applies swatch derivation in auto mode for non-default presets, using the authored swatches as hints for a coherent drawer palette
 - URL param wins over browser storage, which wins over the default preset
 - `PrepaintScript` injects a minimal style block before first paint
-- `StylePreview` portals the drawer into `document.body`
+- `StyleSelector` portals the drawer into `document.body`
 - `allowedTokens` is enforced during validation, prepaint generation, and DOM application
 - `instanceId ?? storageKey ?? DEFAULT` is used to namespace storage and prepaint identity
 
@@ -303,6 +303,6 @@ In development, append `?previewDrawer=techie` (or `studio` / `rustic`) to any p
 
 The shared package stays in this repo. Every consuming site repo keeps only:
 
-- `src/preview-styles/presets/*.ts`
-- `src/preview-styles/config.ts`
-- layout wiring for `PrepaintScript` and `StylePreview`
+- `src/style-selector/presets/*.ts`
+- `src/style-selector/config.ts`
+- layout wiring for `PrepaintScript` and `StyleSelector`

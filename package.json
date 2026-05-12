@@ -1,17 +1,17 @@
 {
-  "name": "@westline/style-preview",
-  "version": "0.1.4",
+  "name": "@westline/style-selector",
+  "version": "0.2.0",
   "private": false,
-  "description": "Reusable style preview engine for Westline client projects.",
+  "description": "Reusable style selector engine for Westline client projects.",
   "license": "UNLICENSED",
   "author": "Westline Marketing",
-  "homepage": "https://github.com/westline-marketing/westline-style-preview#readme",
+  "homepage": "https://github.com/westline-marketing/westline-style-selector#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/westline-marketing/westline-style-preview.git"
+    "url": "git+https://github.com/westline-marketing/westline-style-selector.git"
   },
   "bugs": {
-    "url": "https://github.com/westline-marketing/westline-style-preview/issues"
+    "url": "https://github.com/westline-marketing/westline-style-selector/issues"
   },
   "type": "module",
   "main": "./dist/index.js",

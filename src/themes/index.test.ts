@@ -81,7 +81,7 @@ describe('parsePreviewDrawerParam', () => {
 // ---------------------------------------------------------------------------
 // Auto-derive behavior for default preset
 //
-// Mirrors the derivation decision in StylePreview.tsx (lines 57-64):
+// Mirrors the derivation decision in StyleSelector.tsx (lines 57-64):
 //   1. If theme is locked (uiTheme or non-auto drawerTheme) -> base theme, no derivation
 //   2. If activePresetId === config.defaultStyleId -> base theme, no derivation
 //   3. If non-default preset with >= 5 swatches -> derived theme
@@ -89,7 +89,7 @@ describe('parsePreviewDrawerParam', () => {
 // ---------------------------------------------------------------------------
 
 /**
- * Pure re-implementation of the derivation decision from StylePreview.tsx
+ * Pure re-implementation of the derivation decision from StyleSelector.tsx
  * so we can test it without React/jsdom.
  */
 function resolveActiveTheme(

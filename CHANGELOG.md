@@ -1,7 +1,25 @@
 # Changelog
 
-All notable changes to `@westline/style-preview` are documented here.
+All notable changes to `@westline/style-selector` are documented here.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.2.0] - 2026-05-12
+
+### Changed (breaking)
+- Package renamed from `@westline/style-preview` to `@westline/style-selector`
+- Component renamed: `StylePreview` → `StyleSelector`
+- Hook renamed: `useStylePreview` → `useStyleSelector` (return type `UseStylePreviewReturn` → `UseStyleSelectorReturn`)
+- Env gate renamed: `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW` → `NEXT_PUBLIC_ENABLE_STYLE_SELECTOR`
+- Internal dev-warning log prefix renamed: `[style-preview]` → `[style-selector]`
+- Repo moved to `github.com/westline-marketing/westline-style-selector`
+
+### Migration
+1. `npm uninstall @westline/style-preview && npm install @westline/style-selector`
+2. Update imports: `StylePreview` → `StyleSelector`, `useStylePreview` → `useStyleSelector`
+3. Rename the env var in `.env.local` (and Vercel/Railway): `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW` → `NEXT_PUBLIC_ENABLE_STYLE_SELECTOR` (build-time, requires rebuild)
+4. The recommended consumer folder convention is now `src/style-selector/` (was `src/preview-styles/`). Renaming is optional — only the import paths in your layout need to match wherever you keep `config.ts`.
+
+No runtime behavior changed; this release is a rename only.
 
 ## [0.1.4] - 2026-04-22
 
@@ -29,7 +47,7 @@ Initial public release.
 
 ### Added
 - Core theming engine with CSS custom property overrides on a themed wrapper class
-- `StylePreview` client component with draggable edge trigger and drawer UI
+- `StyleSelector` client component with draggable edge trigger and drawer UI
 - `PrepaintScript` server-safe component to apply saved preview state before hydration
 - Auto-derived drawer chrome from preset swatches (`drawerTheme: 'auto'`)
 - Built-in drawer themes: `studio`, `techie`, `rustic`
@@ -37,4 +55,4 @@ Initial public release.
 - `validatePreset` and `findPreset` utilities
 - Full keyboard navigation and `prefers-reduced-motion` support
 - Contrast-safe accent foregrounds on CTA buttons
-- `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true` env gate for Next.js consumers
+- `NEXT_PUBLIC_ENABLE_STYLE_SELECTOR=true` env gate for Next.js consumers

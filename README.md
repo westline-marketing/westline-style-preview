@@ -1,6 +1,6 @@
-# @westline/style-preview
+# @westline/style-selector
 
-Reusable style preview engine for Westline client sites. Install it into separate site repos, keep each site's `preview-styles` config and presets local, and enable it only in staging or preview environments.
+Reusable style selector engine for Westline client sites. Install it into separate site repos, keep each site's `style-selector` config and presets local, and enable it only in staging or preview environments.
 
 ## When to use
 
@@ -20,18 +20,18 @@ Reusable style preview engine for Westline client sites. Install it into separat
 ## Install
 
 ```bash
-npm install @westline/style-preview
+npm install @westline/style-selector
 ```
 
 Published publicly on npm. No authentication required for install — works on local machines, Vercel, Railway, and any other CI without additional configuration.
 
 ## Quick Start
 
-1. Create local presets in `src/preview-styles/presets/*`
-2. Create local config in `src/preview-styles/config.ts` (use `instanceId`, not `storageKey`, for new sites)
-3. Mount `PrepaintScript` from `@westline/style-preview`
-4. Mount `StylePreview` from `@westline/style-preview/client`
-5. Set `NEXT_PUBLIC_ENABLE_STYLE_PREVIEW=true` only in staging/preview
+1. Create local presets in `src/style-selector/presets/*`
+2. Create local config in `src/style-selector/config.ts` (use `instanceId`, not `storageKey`, for new sites)
+3. Mount `PrepaintScript` from `@westline/style-selector`
+4. Mount `StyleSelector` from `@westline/style-selector/client`
+5. Set `NEXT_PUBLIC_ENABLE_STYLE_SELECTOR=true` only in staging/preview
 
 That env var is a build-time flag. Changing it requires a rebuild/redeploy in the consuming app — it is not a runtime toggle. Non-Next consumers can pass `enabled={yourFlag}` on both components instead of relying on the env fallback.
 
@@ -55,18 +55,18 @@ import {
   type PreviewUITheme,
   type StylePreset,
   type DrawerThemeName,
-} from '@westline/style-preview'
+} from '@westline/style-selector'
 ```
 
 Client entry:
 
 ```ts
-import { StylePreview, useStylePreview, buildPreviewUrl } from '@westline/style-preview/client'
+import { StyleSelector, useStyleSelector, buildPreviewUrl } from '@westline/style-selector/client'
 ```
 
-Both `PrepaintScript` and `StylePreview` accept an optional `enabled?: boolean` prop. When omitted, they fall back to `process.env.NEXT_PUBLIC_ENABLE_STYLE_PREVIEW === 'true'`.
+Both `PrepaintScript` and `StyleSelector` accept an optional `enabled?: boolean` prop. When omitted, they fall back to `process.env.NEXT_PUBLIC_ENABLE_STYLE_SELECTOR === 'true'`.
 
-The `StylePreview` trigger is keyboard accessible (Enter/Space) and draggable — users can reposition it vertically, with the position persisted across sessions. All transitions respect `prefers-reduced-motion`.
+The `StyleSelector` trigger is keyboard accessible (Enter/Space) and draggable — users can reposition it vertically, with the position persisted across sessions. All transitions respect `prefers-reduced-motion`.
 
 ## Consumer Repo Shape
 
@@ -78,7 +78,7 @@ site-repo/
   src/
     app/
       layout.tsx
-    preview-styles/
+    style-selector/
       config.ts
       presets/
         storefront.ts
@@ -92,10 +92,10 @@ Use the package artifact, not a live link:
 # package repo
 npm run build
 npm pack
-# produces westline-style-preview-<version>.tgz in the package repo root
+# produces westline-style-selector-<version>.tgz in the package repo root
 
 # consumer repo
-npm i ../path-to-style-preview/westline-style-preview-<version>.tgz
+npm i ../path-to-style-selector/westline-style-selector-<version>.tgz
 ```
 
 Substitute the actual version from `package.json` for `<version>`. When finished testing, switch the consumer back to the published version.
@@ -109,7 +109,7 @@ See [GUIDE.md](./GUIDE.md) for install, layout wiring, env setup, and deployment
 ```text
 src/
 ├── index.ts      <- server-safe root exports
-├── client.ts     <- client entrypoint for StylePreview + useStylePreview
+├── client.ts     <- client entrypoint for StyleSelector + useStyleSelector
 ├── types/        <- StylePreset, PreviewConfig, PreviewUITheme, DrawerThemeName
 ├── themes/       <- built-in drawer themes, auto derivation, and resolver
 ├── core/         <- persistence, theme application, prepaint, validation

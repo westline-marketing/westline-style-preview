@@ -258,7 +258,7 @@ export function PreviewTrigger({ onOpen, onClose, drawerOpen, instanceId, reduce
         setFocused(false)
         e.currentTarget.style.outline = 'none'
       }}
-      aria-label={drawerOpen ? 'Close style preview' : 'Open style preview'}
+      aria-label={drawerOpen ? 'Close style selector' : 'Open style selector'}
       style={{
         all: 'initial',
         position: 'fixed',

@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom'
 import type { PreviewConfig } from '../types/index.js'
 import { resolveDrawerTheme, parsePreviewDrawerParam } from '../themes/index.js'
 import { deriveDrawerTheme } from '../themes/derive.js'
-import { useStylePreview } from './use-style-preview.js'
+import { useStyleSelector } from './use-style-selector.js'
 import { PreviewTrigger } from './PreviewTrigger.js'
 import { PreviewDrawer } from './PreviewDrawer.js'
 
@@ -27,19 +27,19 @@ const getReduceMotionSnapshot = (): boolean => {
 }
 const getReduceMotionServerSnapshot = (): boolean => false
 
-interface StylePreviewProps {
+interface StyleSelectorProps {
   config: PreviewConfig
   /**
-   * Whether the preview feature is enabled. When omitted, falls back to
-   * checking `process.env.NEXT_PUBLIC_ENABLE_STYLE_PREVIEW === 'true'`
+   * Whether the style selector is enabled. When omitted, falls back to
+   * checking `process.env.NEXT_PUBLIC_ENABLE_STYLE_SELECTOR === 'true'`
    * so Next.js consumers can gate via env vars. Non-Next consumers should
    * pass this explicitly.
    */
   enabled?: boolean
 }
 
-export function StylePreview({ config, enabled }: StylePreviewProps) {
-  const isEnabled = enabled ?? process.env.NEXT_PUBLIC_ENABLE_STYLE_PREVIEW === 'true'
+export function StyleSelector({ config, enabled }: StyleSelectorProps) {
+  const isEnabled = enabled ?? process.env.NEXT_PUBLIC_ENABLE_STYLE_SELECTOR === 'true'
   const mounted = useSyncExternalStore(emptySubscribe, returnTrue, returnFalse)
   const prefersReducedMotion = useSyncExternalStore(
     subscribeReduceMotion,
@@ -66,7 +66,7 @@ export function StylePreview({ config, enabled }: StylePreviewProps) {
     openDrawer,
     closeDrawer,
     previewUrl,
-  } = useStylePreview(config, { enabled: isEnabled })
+  } = useStyleSelector(config, { enabled: isEnabled })
 
   const baseTheme = useMemo(() => resolveDrawerTheme(themeConfig), [themeConfig])
   const isThemeLocked = Boolean(

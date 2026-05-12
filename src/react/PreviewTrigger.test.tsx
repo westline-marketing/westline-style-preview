@@ -208,14 +208,14 @@ describe('PreviewTrigger drag guard', () => {
 // ─── Aria label ─────────────────────────────────────────────────────
 
 describe('PreviewTrigger aria-label', () => {
-  it('shows "Open style preview" when drawer is closed', () => {
+  it('shows "Open style selector" when drawer is closed', () => {
     const button = renderTrigger({ drawerOpen: false })
-    expect(button.getAttribute('aria-label')).toBe('Open style preview')
+    expect(button.getAttribute('aria-label')).toBe('Open style selector')
   })
 
-  it('shows "Close style preview" when drawer is open', () => {
+  it('shows "Close style selector" when drawer is open', () => {
     const button = renderTrigger({ drawerOpen: true })
-    expect(button.getAttribute('aria-label')).toBe('Close style preview')
+    expect(button.getAttribute('aria-label')).toBe('Close style selector')
   })
 })
 

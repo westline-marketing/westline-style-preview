@@ -25,7 +25,7 @@ export function validatePreset(
     (!preset.swatches || preset.swatches.length < REQUIRED_SWATCH_COUNT)
   ) {
     console.warn(
-      `[style-preview] Preset "${preset.id}" has ${preset.swatches?.length ?? 0} swatches (${REQUIRED_SWATCH_COUNT} required for auto drawer theming)`
+      `[style-selector] Preset "${preset.id}" has ${preset.swatches?.length ?? 0} swatches (${REQUIRED_SWATCH_COUNT} required for auto drawer theming)`
     )
   }
 

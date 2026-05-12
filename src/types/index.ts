@@ -38,7 +38,7 @@ export interface PreviewConfig {
   targetSelector: string
   presets: StylePreset[]
   allowedTokens?: string[]
-  /** Named drawer theme. When omitted or set to 'auto', StylePreview starts from
+  /** Named drawer theme. When omitted or set to 'auto', StyleSelector starts from
    *  the Studio base theme and may derive drawer chrome from a non-default preset's
    *  swatches at runtime. Set to 'studio', 'techie', or 'rustic' to lock the
    *  drawer to a static theme. */

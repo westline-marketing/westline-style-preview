@@ -3,15 +3,15 @@
  *
  * This file is a reference template for consuming site repos. It is NOT
  * built as part of this package (see tsconfig.build.json) and is NOT shipped
- * in the published tarball. The `@westline/style-preview` import below will
+ * in the published tarball. The `@westline/style-selector` import below will
  * not resolve when viewed from inside this repo — it is written the way a
  * real consumer will write it, so you can copy this file into a site repo
- * at `src/preview-styles/config.ts` and adapt the preset content.
+ * at `src/style-selector/config.ts` and adapt the preset content.
  *
- * Once copied into a consumer site that has installed `@westline/style-preview`,
+ * Once copied into a consumer site that has installed `@westline/style-selector`,
  * the import resolves normally.
  */
-import type { StylePreset, PreviewConfig } from '@westline/style-preview'
+import type { StylePreset, PreviewConfig } from '@westline/style-selector'
 
 // 1. Define which CSS custom properties your presets are allowed to override.
 //    These must match the variables in your theme wrapper class.

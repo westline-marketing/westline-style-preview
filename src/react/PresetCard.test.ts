@@ -48,7 +48,7 @@ describe('PresetCard — source integration', () => {
     // flex-shrink:0, long descriptions on narrow mobile viewports cause the
     // flex algorithm to squash each card, and overflow:hidden (required for
     // the accent bar) then clips the description text. Regression guard for
-    // https://github.com/westline-marketing/westline-style-preview issue
+    // https://github.com/westline-marketing/westline-style-selector issue
     // surfaced on mobile Safari (iOS 17+).
     expect(src).toMatch(/flexShrink:\s*0/)
   })

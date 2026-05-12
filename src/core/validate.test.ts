@@ -152,7 +152,7 @@ describe('validate', () => {
       expect(validatePreset(preset)).toBe(true)
       expect(warnSpy).toHaveBeenCalledOnce()
       expect(warnSpy).toHaveBeenCalledWith(
-        '[style-preview] Preset "partial" has 3 swatches (5 required for auto drawer theming)'
+        '[style-selector] Preset "partial" has 3 swatches (5 required for auto drawer theming)'
       )
     })
 
@@ -167,7 +167,7 @@ describe('validate', () => {
       expect(validatePreset(preset)).toBe(true)
       expect(warnSpy).toHaveBeenCalledOnce()
       expect(warnSpy).toHaveBeenCalledWith(
-        '[style-preview] Preset "missing" has 0 swatches (5 required for auto drawer theming)'
+        '[style-selector] Preset "missing" has 0 swatches (5 required for auto drawer theming)'
       )
     })
 
@@ -194,7 +194,7 @@ describe('validate', () => {
       expect(validatePreset(preset, undefined, 'original')).toBe(true)
       expect(warnSpy).toHaveBeenCalledOnce()
       expect(warnSpy).toHaveBeenCalledWith(
-        '[style-preview] Preset "swatch-only" has 0 swatches (5 required for auto drawer theming)'
+        '[style-selector] Preset "swatch-only" has 0 swatches (5 required for auto drawer theming)'
       )
     })
 
