@@ -1,0 +1,16 @@
+filters:
+  or:
+    - 'type == "tasks"'
+    - 'file.hasTag("tasks")'
+properties:
+  file.name:
+    displayName: "Task note"
+  project:
+    displayName: "Project"
+views:
+  - type: table
+    name: "Task notes"
+    order:
+      - file.name
+      - project
+      - file.mtime

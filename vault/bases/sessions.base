@@ -1,0 +1,16 @@
+filters: 'type == "session"'
+properties:
+  file.name:
+    displayName: "Session"
+  date:
+    displayName: "Date"
+  agent:
+    displayName: "Agent"
+views:
+  - type: table
+    name: "Recent sessions"
+    order:
+      - file.name
+      - date
+      - agent
+      - file.mtime

@@ -1,0 +1,19 @@
+filters: 'type == "decision"'
+properties:
+  file.name:
+    displayName: "Decision"
+  date:
+    displayName: "Date"
+  status:
+    displayName: "Status"
+  supersedes:
+    displayName: "Supersedes"
+views:
+  - type: table
+    name: "All decisions"
+    order:
+      - file.name
+      - date
+      - status
+      - supersedes
+      - file.mtime

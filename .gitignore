@@ -2,3 +2,17 @@ node_modules/
 dist/
 .DS_Store
 *.tsbuildinfo
+
+# Obsidian local state
+**/.obsidian/workspace.json
+**/.obsidian/workspace.local.json
+**/.obsidian/workspace-mobile.json
+**/.obsidian/workspaces.json
+**/.obsidian/cache/
+**/.obsidian/plugins/*/data.json
+.claude/skills/obsidian-skills/
+.claude/skills/obsidian-markdown/
+.claude/skills/obsidian-bases/
+.claude/skills/obsidian-cli/
+.claude/skills/json-canvas/
+.claude/skills/defuddle/
