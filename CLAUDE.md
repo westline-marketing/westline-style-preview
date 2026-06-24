@@ -88,6 +88,7 @@ This project uses vault/ as persistent memory for Claude Code, Codex, and other 
 Session start:
 - Claude Code: read this file, then vault/CLAUDE.md.
 - Codex: read AGENTS.md, then vault/AGENTS.md and vault/CLAUDE.md.
+- Cursor: read AGENTS.md, then .cursor/rules/, then vault/CLAUDE.md.
 - Read vault/CLAUDE.md for the canonical vault operating manual + YAML schema.
 - Read vault/01-project-context.md for orientation.
 - Read vault/02-architecture.md and vault/04-code-map.md for system shape.
