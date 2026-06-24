@@ -1,0 +1,29 @@
+---
+description: Obsidian vault note conventions for markdown under vault/
+globs: vault/**/*.md
+alwaysApply: false
+---
+
+# Obsidian vault markdown
+
+Applies when editing files under `vault/`.
+
+## Frontmatter
+
+Match the schema for each note type defined in `vault/CLAUDE.md`. Do not invent top-level keys without updating that manual.
+
+## Decisions
+
+- Path: `vault/decisions/YYYY-MM-DD-<decision-slug>.md`
+- Slug is verb-led and specific (e.g. `pick-stripe-over-paddle`).
+- Structure: Context, Decision, Why, Alternatives considered, Consequences, Links.
+
+## Provenance
+
+- Derived notes declare `sources:` in frontmatter (`vault:` + `path:`).
+- Cross-vault references use **bold path strings**, not wikilinks.
+- Within-vault cross-references use `[[exact-filename]]`.
+
+## Where things go
+
+Follow `vault/CLAUDE.md` §2 — route by artifact type (knowledge, sources, sessions, runbooks, agent-outbox), not by topic alone.

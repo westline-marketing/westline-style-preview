@@ -1,0 +1,45 @@
+---
+description: Westline Obsidian vault session start and safety rules (project repo with vault/)
+alwaysApply: true
+---
+
+# Westline vault bootstrap
+
+This project uses `vault/` as persistent memory. Code lives in the repo; durable context lives in the vault.
+
+## Layout check
+
+- If `vault/CLAUDE.md` exists → follow the **project vault** protocol below.
+- If there is no `vault/` folder and root `CLAUDE.md` is a meta-vault manual → follow that file's read order instead.
+
+## Session start (project vault)
+
+Before substantive code or planning work, read:
+
+1. `vault/CLAUDE.md` — canonical operating manual and YAML schemas
+2. `vault/AGENTS.md` — Codex/Cursor bridge
+3. `vault/01-project-context.md`
+4. `vault/02-architecture.md`
+5. `vault/04-code-map.md`
+6. `vault/03-status.md`
+7. `vault/tasks.md`
+8. `vault/handoff.md`
+9. `vault/LESSONS.md`
+10. `vault/knowledge/index.md`
+11. Newest file in `vault/sessions/`
+
+Optional global rituals (if installed): `westline-morning` / `westline-wrap` skills in `~/.claude/skills/`.
+
+## Safety rules
+
+- Read/write notes with filesystem tools.
+- Do not edit `vault/.obsidian/` unless explicitly asked.
+- No secrets in vault notes; use `.env`.
+- Rename or move linked notes with `obsidian move` / `obsidian rename` when wikilinks may exist.
+- Parallel agents write to `vault/agent-outbox/`; the lead integrates useful findings before wrap-up.
+- At wrap-up, update vault state files required by `vault/CLAUDE.md`.
+
+## Agent entrypoints
+
+- **Claude Code:** root `CLAUDE.md` → `vault/CLAUDE.md`
+- **Codex / Cursor:** root `AGENTS.md` → `.cursor/rules/` → `vault/CLAUDE.md`
